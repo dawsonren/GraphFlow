@@ -8,7 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb+srv://AuthUser:EW3Bg0UuS8j8coHL@cluster0.qeg0f.mongodb.net/graph-flow?retryWrites=true&w=majority';
+var mongoDB = require('./mongokey')
 mongoose.connect(mongoDB, {useNewUrlParser: true , useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
