@@ -9,8 +9,8 @@ export const MainRouter = (props) => {
     <Fragment>
       <div id="main-screen">
         <Routes>
-          <Route path="/home" element={<HomeScreen />} />
           <Route path="/create-graph" element={<CreateGraphScreen />} />
+          <Route path="/" element={<HomeScreen />} />
         </Routes>
       </div>
     </Fragment>
