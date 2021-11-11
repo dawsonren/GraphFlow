@@ -2,7 +2,7 @@ var Graph = require('../models/graph');
 
 // Display the list of all Graphs
 exports.graph_list = function(req, res) {
-  res.render('graph', { title: 'GraphFlow' });
+  res.send('NOT IMPLEMENTED: Graph list')
 }
 
 // Display the list of all Nodes.
@@ -13,6 +13,11 @@ exports.node_list = function(req, res) {
 // Display the list of all Edges.
 exports.edge_list = function(req, res) {
   res.send('NOT IMPLEMENTED: Edge list')
+}
+
+// Display a particular Graph.
+exports.graph = function(req, res) {
+  res.send(`NOT IMPLEMENTED: Graph ${req.params.id}`)
 }
 
 // Display Graph create form on GET
