@@ -28,29 +28,37 @@ export const LeftContainer = styled.div`
   justify-content: left;
 `
 
-export const ModeSelector = ({mode, setMode}) => {
-  const modes = ['add_node', 'add_edge', 'select', 'delete', 'clear']
-  const modeNames = ['Add Node', 'Add Edge', 'Select', 'Delete', 'Clear']
+const ModeRow = ({key, icon, selected, onClickCard, modeName}) => {
+  return (
+    <Row key={key} style={{margin: '2px 0px'}}>
+      <Card onClick={onClickCard} selected={selected}>
+        {icon}
+      </Card>
+      <div style={{margin: '0px 20px'}}>
+        {modeName}
+      </div>
+    </Row>
+  )
+}
+
+export const ModeSelector = ({mode, setMode, setGraphJson}) => {
+  const modes = ['add_node', 'add_edge', 'select', 'delete']
+  const modeNames = ['Add Node', 'Add Edge', 'Select', 'Delete']
   const icons = [<RiAddCircleFill size={30} />,
                  <RiArrowRightFill size={30} />,
                  <RiCursorFill size={30} />,
-                 <RiDeleteBin7Fill size={30} />,
-                 <RiForbid2Line size={30} />]
+                 <RiDeleteBin7Fill size={30} />]
 
   return (
     <LeftContainer>
       {modes.map((m, i) => {
         return (
-          <Row key={i} style={{margin: '2px 0px'}}>
-            <Card onClick={() => setMode(m)} selected={mode === m}>
-              {icons[i]}
-            </Card>
-            <div style={{margin: '0px 20px'}}>
-              {modeNames[i]}
-            </div>
-          </Row>
+          <ModeRow key={i} icon={icons[i]} selected={mode === m}
+            onClickCard={() => setMode(m)} modeName={modeNames[i]} />
         )
       })}
+      <ModeRow key={modes.length} icon={<RiForbid2Line size={30} />} selected={mode === modes.length}
+        onClickCard={() => setGraphJson({nodes: [], edges: []})} modeName={'Clear'} />
     </LeftContainer>
   )
 

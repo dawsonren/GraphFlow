@@ -15,7 +15,7 @@ export const CreateGraphScreen = () => {
   const [mode, setMode] = useState('add_node')
 
   const modeRef = useRef(null)
-  useOutsideClick(modeRef, () => setMode(''))
+  useOutsideClick(modeRef, () => setMode('select'))
 
   async function populate() {
     const id = await parseInt(graphId)
@@ -29,16 +29,17 @@ export const CreateGraphScreen = () => {
     <Wrapper>
       <Column>
         <p>Create Graph Screen</p>
+        {/*
         <input value={graphId} onChange={(e) => setGraphId(e.target.value)} />
-        <textarea value={graphData} onChange={(e) => setGraphData(e.target.value)} />
+        <textarea value={graphData} onChange={(e) => setGraphData(e.target.value)} />*/}
         <p>JSON</p>
         <p>{JSON.stringify(graphJson)}</p>
-        <button onClick={populate}>Get Graph</button>
+        {/*<button onClick={populate}>Get Graph</button>
         <button onClick={() => createGraph()}>Create Graph</button>
         <button onClick={() => deleteGraph(graphId)}>Delete Graph</button>
-        <button onClick={() => updateGraph(graphId, graphData)}>Update Graph</button>
+        <button onClick={() => updateGraph(graphId, graphData)}>Update Graph</button>*/}
         <Row ref={modeRef}>
-          <ModeSelector mode={mode} setMode={setMode} />
+          <ModeSelector mode={mode} setMode={setMode} setGraphJson={setGraphJson} />
           <Canvas graphJson={graphJson} setGraphJson={setGraphJson} mode={mode} />
         </Row>
       </Column>

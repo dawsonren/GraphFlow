@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Node } from './Node'
+import { Edge } from './Edge'
 
 const CanvasBase = styled.div`
   border: 2px solid var(--primary);
@@ -10,13 +11,34 @@ const CanvasBase = styled.div`
 `
 
 export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
-  const [nodes, setNodes] = useState([])
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
+
+  const [nodes, setNodes] = useState(graphJson.nodes)
+  const [edges, setEdges] = useState(graphJson.edges)
+
+  const [fromNode, setFromNode] = useState(null)
+  const [toNode, setToNode] = useState(null)
 
   const canvasWidth = 700
   const canvasHeight = 400
   const nodeRadius = 15
+
+  useEffect(() => {
+    setNodes(graphJson.nodes)
+    setEdges(graphJson.edges)
+  }, [graphJson])
+
+  useEffect(() => {
+    if (mode !== 'add_edge') {
+      setFromNode(null)
+      setToNode(null)
+    }
+  }, [mode])
+
+  ///
+  /// ADD NODE FUNCTIONS
+  ///
 
   function drawNode(node) {
     const oldNodes = [...nodes]
@@ -29,10 +51,8 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   }
 
   function inBounds(top, left) {
-    const offsets = document.getElementById('graph-canvas').getBoundingClientRect()
-
     // Check out of canvas boundary
-    if (top < 0 || top > (canvasHeight + offsets.top - (2 * nodeRadius)) || left < 0 || left > (canvasWidth + offsets.left - (2 * nodeRadius))) {
+    if (top < 0 || top > (canvasHeight - (2 * nodeRadius)) || left < 0 || left > (canvasWidth - (2 * nodeRadius))) {
       return false
     }
 
@@ -48,8 +68,9 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   }
 
   function handleAddNode(e) {
-    const nodeTop = e.clientY - nodeRadius
-    const nodeLeft = e.clientX - nodeRadius
+    const offsets = document.getElementById('graph-canvas').getBoundingClientRect()
+    const nodeTop = e.clientY - offsets.top - nodeRadius
+    const nodeLeft = e.clientX - offsets.left - nodeRadius
 
     if (!inBounds(nodeTop, nodeLeft) || showMenu) { return }
 
@@ -58,7 +79,65 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
     newNodeOnGraph(newNode)
   }
 
-  function handleAddEdge(e) {
+  ///
+  /// ADD EDGE FUNCTIONS
+  ///
+
+  function drawEdge(edge) {
+    const oldEdges = [...edges]
+    setEdges([...oldEdges, edge])
+  }
+
+  function newEdgeOnGraph(edge) {
+    const oldEdges = [...graphJson.edges]
+    setGraphJson({...graphJson, edges: [...oldEdges, edge]})
+  }
+
+  function handleNodeClick(e, node) {
+    // Stop from bubbling up to add edge
+    e.stopPropagation()
+
+    if (!fromNode) {
+      setFromNode(node)
+    } else if (!toNode) {
+      setToNode(node)
+    } else {
+      setFromNode(null)
+      setToNode(null)
+    }
+  }
+
+  useEffect(() => {
+    if (fromNode && toNode) {
+      handleAddEdge()
+    }
+  }, [fromNode, toNode])
+
+  function handleAddEdge() {
+    const value = 5;
+
+    const newEdge = {
+      fromX: fromNode.left + nodeRadius,
+      fromY: fromNode.top + nodeRadius,
+      toX: toNode.left + nodeRadius,
+      toY: toNode.top + nodeRadius,
+      from: fromNode.id,
+      to: toNode.id,
+      value: value
+    }
+
+    drawEdge(newEdge)
+    newEdgeOnGraph(newEdge)
+
+    setFromNode(null)
+    setToNode(null)
+  }
+
+  ///
+  /// DELETE FUNCTIONS
+  ///
+
+  function handleDelete(e) {
     return
   }
 
@@ -66,10 +145,20 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
     switch (mode) {
       case 'add_node':
         handleAddNode(e)
+        break
       case 'add_edge':
-        handleAddEdge(e)
-      default:
         return
+      case 'select':
+        return
+      case 'delete':
+        handleDelete(e)
+        break
+      case 'clear':
+        setGraphJson({nodes: [], edges: []})
+        setNodes([])
+        return
+      default:
+        console.log('unrecognized modality')
     }
   }
 
@@ -79,7 +168,13 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
       {nodes.map((node, i) => {
         return (
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight}
-            showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)} />
+            showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
+            mode={mode} handleNodeClick={handleNodeClick} />
+        )
+      })}
+      {edges.map((edge, i) => {
+        return (
+          <Edge key={i} edge={edge} nodeRadius={nodeRadius} />
         )
       })}
     </CanvasBase>

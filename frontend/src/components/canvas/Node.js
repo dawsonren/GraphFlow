@@ -41,18 +41,20 @@ const DropdownMenuRow = styled.div`
   }
 `
 
-export const Node = ({id, node, highlight, setHighlight, showMenu, setShowMenu}) => {
+export const Node = ({id, node, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick}) => {
   const nodeRef = useRef(null)
 
   useOutsideClick(nodeRef, () => showMenu === id && setShowMenu(false))
 
+  const offsets = document.getElementById('graph-canvas').getBoundingClientRect()
+
   return (
-    <div ref={nodeRef}>
-      <Circle radius={node.radius} top={node.top} left={node.left}
+    <div ref={nodeRef} onClick={(e) => handleNodeClick(e, node)}>
+      <Circle radius={node.radius} top={node.top + offsets.top} left={node.left + offsets.left}
         highlight={highlight === id} onMouseEnter={() => setHighlight(id)}
         onMouseLeave={() => setHighlight(false)} onClick={() => setShowMenu(id)} />
       {showMenu === id &&
-        <DropdownMenu top={node.top + node.radius} left={node.left + node.radius}>
+        <DropdownMenu top={node.top + node.radius + offsets.top} left={node.left + node.radius + offsets.left}>
           <DropdownMenuRow>Hello</DropdownMenuRow>
           <DropdownMenuRow>Goodbye</DropdownMenuRow>
           <DropdownMenuRow>Sweet</DropdownMenuRow>
