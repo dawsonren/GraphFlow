@@ -28,9 +28,9 @@ export const LeftContainer = styled.div`
   justify-content: left;
 `
 
-const ModeRow = ({key, icon, selected, onClickCard, modeName}) => {
+const ModeRow = ({id, icon, selected, onClickCard, modeName}) => {
   return (
-    <Row key={key} style={{margin: '2px 0px'}}>
+    <Row key={id} style={{margin: '2px 0px'}}>
       <Card onClick={onClickCard} selected={selected}>
         {icon}
       </Card>
@@ -53,7 +53,7 @@ export const ModeSelector = ({mode, setMode, setGraphJson}) => {
     <LeftContainer>
       {modes.map((m, i) => {
         return (
-          <ModeRow key={i} icon={icons[i]} selected={mode === m}
+          <ModeRow key={i} id={i} icon={icons[i]} selected={mode === m}
             onClickCard={() => setMode(m)} modeName={modeNames[i]} />
         )
       })}

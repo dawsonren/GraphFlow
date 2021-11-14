@@ -13,9 +13,14 @@ const CanvasBase = styled.div`
 export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
+  const [showEdgeMenu, setShowEdgeMenu] = useState(false)
 
   const [nodes, setNodes] = useState(graphJson.nodes)
   const [edges, setEdges] = useState(graphJson.edges)
+
+  // ids must monotonically increase, since some nodes/edges may be deleted
+  const [nodeCounter, setNodeCounter] = useState(0)
+  const [edgeCounter, setEdgeCounter] = useState(0)
 
   const [fromNode, setFromNode] = useState(null)
   const [toNode, setToNode] = useState(null)
@@ -24,6 +29,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   const canvasHeight = 400
   const nodeRadius = 15
 
+  // Modify JSON to modify View
   useEffect(() => {
     setNodes(graphJson.nodes)
     setEdges(graphJson.edges)
@@ -40,11 +46,6 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   /// ADD NODE FUNCTIONS
   ///
 
-  function drawNode(node) {
-    const oldNodes = [...nodes]
-    setNodes([...oldNodes, node])
-  }
-
   function newNodeOnGraph(node) {
     const oldNodes = [...graphJson.nodes]
     setGraphJson({...graphJson, nodes: [...oldNodes, node]})
@@ -59,7 +60,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
     // Check too close to other nodes
     // Inefficient, should use k-d trees if # of nodes grow large
     for (const node of nodes) {
-      if (Math.pow(node.top - top, 2) + Math.pow(node.left - left, 2) < Math.pow(nodeRadius * 2, 2)) {
+      if (Math.pow(node.display_data.top - top, 2) + Math.pow(node.display_data.left - left, 2) < Math.pow(nodeRadius * 2, 2)) {
         return false
       }
     }
@@ -74,91 +75,118 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
 
     if (!inBounds(nodeTop, nodeLeft) || showMenu) { return }
 
-    const newNode = {top: nodeTop, left: nodeLeft, radius: nodeRadius, id: nodes.length}
-    drawNode(newNode)
+    const newNode = {
+      display_data: {
+        top: nodeTop,
+        left: nodeLeft,
+        radius: nodeRadius,
+      },
+      id: nodeCounter
+    }
+    setNodeCounter(nodeCounter + 1)
     newNodeOnGraph(newNode)
+  }
+
+  function deleteNode(node) {
+    const oldNodes = [...graphJson.nodes]
+    setGraphJson({...graphJson, nodes: oldNodes.filter((n) => n.id !== node.id)})
   }
 
   ///
   /// ADD EDGE FUNCTIONS
   ///
 
-  function drawEdge(edge) {
-    const oldEdges = [...edges]
-    setEdges([...oldEdges, edge])
-  }
-
   function newEdgeOnGraph(edge) {
     const oldEdges = [...graphJson.edges]
     setGraphJson({...graphJson, edges: [...oldEdges, edge]})
   }
 
+  function setEdgeValueOnGraph(field) {
+    return (edge, value) => {
+      const oldEdges = [...graphJson.edges]
+      const newEdges = oldEdges.map((e) => {
+        if (e.id === edge.id) {
+          // It's ok to modify e, since it's passed by value.
+          e[field] = value
+        }
+        return e
+      })
+      setGraphJson({...graphJson, edges: newEdges})
+    }
+  }
+
+  const setEdgeWeightOnGraph = setEdgeValueOnGraph('weight')
+  const setEdgeMinFlowOnGraph = setEdgeValueOnGraph('min_flow')
+  const setEdgeMaxFlowOnGraph = setEdgeValueOnGraph('max_flow')
+
   function handleNodeClick(e, node) {
-    // Stop from bubbling up to add edge
+    // Stop from bubbling up to canvasHandleClick
     e.stopPropagation()
 
-    if (!fromNode) {
-      setFromNode(node)
-    } else if (!toNode) {
-      setToNode(node)
-    } else {
-      setFromNode(null)
-      setToNode(null)
+    if (mode === 'add_edge') {
+      if (!fromNode) {
+        setFromNode(node)
+      } else if (!toNode) {
+        setToNode(node)
+      } else {
+        setFromNode(null)
+        setToNode(null)
+      }
+    } else if (mode === 'delete') {
+      deleteNode(node)
+      const related_edges = graphJson.edges.filter((edge) => edge.from === node.id || edge.to === node.id)
+      console.log(related_edges)
+      for (const edge of related_edges) {
+        deleteEdge(edge)
+      }
     }
   }
 
   useEffect(() => {
-    if (fromNode && toNode) {
-      handleAddEdge()
+    if (fromNode && toNode && mode === 'add_edge') {
+      // Don't allow multiple edges from a certain to-from node pair
+      const notDuplicate = graphJson.edges.filter((edge) => edge.from === fromNode.id && edge.to === toNode.id).length === 0
+      // Don't allow nodes to link to themselves
+      const notSelfLink = fromNode.id !== toNode.id
+      if (notDuplicate && notSelfLink) {
+        handleAddEdge()
+      }
     }
   }, [fromNode, toNode])
 
   function handleAddEdge() {
-    const value = 5;
+    const weight = 5;
 
     const newEdge = {
-      fromX: fromNode.left + nodeRadius,
-      fromY: fromNode.top + nodeRadius,
-      toX: toNode.left + nodeRadius,
-      toY: toNode.top + nodeRadius,
+      display_data: {
+        fromX: fromNode.display_data.left + nodeRadius,
+        fromY: fromNode.display_data.top + nodeRadius,
+        toX: toNode.display_data.left + nodeRadius,
+        toY: toNode.display_data.top + nodeRadius,
+      },
       from: fromNode.id,
       to: toNode.id,
-      value: value
+      weight: weight,
+      min_flow: null,
+      max_flow: null,
+      id: edgeCounter
     }
 
-    drawEdge(newEdge)
+    setEdgeCounter(edgeCounter + 1)
     newEdgeOnGraph(newEdge)
 
     setFromNode(null)
     setToNode(null)
   }
 
-  ///
-  /// DELETE FUNCTIONS
-  ///
-
-  function handleDelete(e) {
-    return
+  function deleteEdge(edge) {
+    const oldEdges = [...graphJson.edges]
+    setGraphJson({...graphJson, edges: oldEdges.filter((e) => e.id !== edge.id)})
   }
 
   function canvasHandleClick(e) {
-    switch (mode) {
-      case 'add_node':
-        handleAddNode(e)
-        break
-      case 'add_edge':
-        return
-      case 'select':
-        return
-      case 'delete':
-        handleDelete(e)
-        break
-      case 'clear':
-        setGraphJson({nodes: [], edges: []})
-        setNodes([])
-        return
-      default:
-        console.log('unrecognized modality')
+    if (mode === 'add_node') {
+      handleAddNode(e)
     }
   }
 
@@ -174,7 +202,9 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
       })}
       {edges.map((edge, i) => {
         return (
-          <Edge key={i} edge={edge} nodeRadius={nodeRadius} />
+          <Edge key={i} edge={edge} nodeRadius={nodeRadius}
+            showEdgeMenu={showEdgeMenu} setShowEdgeMenu={(input) => mode === 'select' && setShowEdgeMenu(input)}
+            setWeight={setEdgeWeightOnGraph} setMinFlow={setEdgeMinFlowOnGraph} setMaxFlow={setEdgeMaxFlowOnGraph}/>
         )
       })}
     </CanvasBase>

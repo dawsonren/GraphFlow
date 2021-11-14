@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { useOutsideClick } from '../../utils/use-outside-click';
+import { DropdownMenu, DropdownMenuRow } from '../styled'
 
 const Circle = styled.div`
   position: absolute;
@@ -20,27 +21,6 @@ const Circle = styled.div`
   `}
 `
 
-const DropdownMenu = styled.div`
-  position: absolute;
-  border: 0.5px solid var(--black-2);
-  border-radius: 5px;
-  width: 100px;
-  top: ${props => props.top}px;
-  left: ${props => props.left}px;
-  background-color: var(--black-3);
-  z-index: 2;
-`
-
-const DropdownMenuRow = styled.div`
-  height: 20px;
-  padding-left: 2px;
-  border-radius: 5px;
-
-  &:hover {
-    background-color: var(--black-4);
-  }
-`
-
 export const Node = ({id, node, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick}) => {
   const nodeRef = useRef(null)
 
@@ -50,11 +30,13 @@ export const Node = ({id, node, highlight, setHighlight, showMenu, setShowMenu, 
 
   return (
     <div ref={nodeRef} onClick={(e) => handleNodeClick(e, node)}>
-      <Circle radius={node.radius} top={node.top + offsets.top} left={node.left + offsets.left}
+      <Circle radius={node.display_data.radius} top={node.display_data.top + offsets.top} left={node.display_data.left + offsets.left}
         highlight={highlight === id} onMouseEnter={() => setHighlight(id)}
         onMouseLeave={() => setHighlight(false)} onClick={() => setShowMenu(id)} />
       {showMenu === id &&
-        <DropdownMenu top={node.top + node.radius + offsets.top} left={node.left + node.radius + offsets.left}>
+        <DropdownMenu top={node.display_data.top + node.display_data.radius + offsets.top}
+          left={node.display_data.left + node.display_data.radius + offsets.left}
+          width={100}>
           <DropdownMenuRow>Hello</DropdownMenuRow>
           <DropdownMenuRow>Goodbye</DropdownMenuRow>
           <DropdownMenuRow>Sweet</DropdownMenuRow>
