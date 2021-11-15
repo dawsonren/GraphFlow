@@ -7,23 +7,17 @@ var graph_controller = require('../controllers/graphController');
 
 /// GRAPH ROUTES ///
 
-// GET request for seeing a particular Graph.
+// GET request for a particular Graph.
 router.get('/:id', graph_controller.graph);
 
-// GET request for creating a Graph.
-router.get('/create', graph_controller.graph_create_get);
+// GET request for all Graphs.
+router.get('/all', graph_controller.graph_list);
 
 // POST request for creating a Graph.
 router.post('/create', graph_controller.graph_create_post);
 
-// GET request for deleting a Graph.
-router.get('/:id/delete', graph_controller.graph_delete_get);
-
 // POST request for deleting a Graph.
 router.post('/:id/delete', graph_controller.graph_delete_post);
-
-// GET request for updating a Graph.
-router.get('/:id/update', graph_controller.graph_update_get);
 
 // POST request for updating a Graph.
 router.post('/:id/update', graph_controller.graph_update_post);
