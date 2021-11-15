@@ -88,8 +88,13 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   }
 
   function deleteNode(node) {
+    const related_edge_ids = graphJson.edges.filter((edge) => edge.from === node.id || edge.to === node.id).map((edge) => edge.id)
     const oldNodes = [...graphJson.nodes]
-    setGraphJson({...graphJson, nodes: oldNodes.filter((n) => n.id !== node.id)})
+    const oldEdges = [...graphJson.edges]
+
+    const newNodes = oldNodes.filter((n) => n.id !== node.id)
+    const newEdges = oldEdges.filter((e) => !related_edge_ids.includes(e.id))
+    setGraphJson({nodes: newNodes, edges: newEdges})
   }
 
   ///
@@ -134,11 +139,6 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
       }
     } else if (mode === 'delete') {
       deleteNode(node)
-      const related_edges = graphJson.edges.filter((edge) => edge.from === node.id || edge.to === node.id)
-      console.log(related_edges)
-      for (const edge of related_edges) {
-        deleteEdge(edge)
-      }
     }
   }
 
@@ -181,7 +181,8 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
 
   function deleteEdge(edge) {
     const oldEdges = [...graphJson.edges]
-    setGraphJson({...graphJson, edges: oldEdges.filter((e) => e.id !== edge.id)})
+    const newJson = {...graphJson, edges: oldEdges.filter((e) => e.id !== edge.id)}
+    setGraphJson(newJson)
   }
 
   function canvasHandleClick(e) {
@@ -204,7 +205,8 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
         return (
           <Edge key={i} edge={edge} nodeRadius={nodeRadius}
             showEdgeMenu={showEdgeMenu} setShowEdgeMenu={(input) => mode === 'select' && setShowEdgeMenu(input)}
-            setWeight={setEdgeWeightOnGraph} setMinFlow={setEdgeMinFlowOnGraph} setMaxFlow={setEdgeMaxFlowOnGraph}/>
+            setWeight={setEdgeWeightOnGraph} setMinFlow={setEdgeMinFlowOnGraph} setMaxFlow={setEdgeMaxFlowOnGraph}
+            mode={mode} deleteEdge={deleteEdge} />
         )
       })}
     </CanvasBase>

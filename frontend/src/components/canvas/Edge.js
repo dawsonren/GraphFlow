@@ -47,7 +47,7 @@ const RedSpan = styled.span`
   color: var(--red);
 `
 
-export const Edge = ({edge, nodeRadius, showEdgeMenu, setShowEdgeMenu, setWeight, setMinFlow, setMaxFlow}) => {
+export const Edge = ({edge, nodeRadius, showEdgeMenu, setShowEdgeMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge}) => {
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
   const fromY = edge.display_data.fromY
@@ -119,7 +119,7 @@ export const Edge = ({edge, nodeRadius, showEdgeMenu, setShowEdgeMenu, setWeight
         <path d={`M${arrowStartX},${arrowStartY} L${arrowEndX},${arrowEndY}`}
           style={{stroke: 'var(--secondary)', strokeWidth: '2px', fill: 'none', markerEnd: 'url(#arrow)'}} />
       </svg>
-      <div ref={edgeRef} onClick={() => setShowEdgeMenu(edge.id)}>
+      <div ref={edgeRef} onClick={() => mode === 'delete' ? deleteEdge(edge) : setShowEdgeMenu(edge.id)}>
         <ValueContainer top={valueY} left={valueX} angle={angle * 180 / Math.PI}>
           <p style={{margin: 0, padding: 0}}>
             {showWeight}/
