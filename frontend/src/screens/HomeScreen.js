@@ -8,7 +8,7 @@ export const HomeScreen = () => {
   const navigate = useNavigate()
 
   return (
-    <Wrapper>
+    <Wrapper showIn={true}>
       <h1>Home Screen</h1>
       <button onClick={() => navigate('/create-graph')}>Go to Create Graph</button>
     </Wrapper>

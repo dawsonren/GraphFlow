@@ -2,6 +2,8 @@ import React, { Fragment, useState } from 'react';
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
+import { FlexGrow, LoginButton, RegisterButton } from '../styled'
+
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -16,6 +18,7 @@ const Header = styled.div`
   display: flex;
   flex-direction: row;
   position: fixed;
+  align-items: center;
 `
 
 const Content = styled.div`
@@ -39,13 +42,21 @@ const Brand = styled.div`
   cursor: pointer;
 `
 
-export const Wrapper = ({children}) => {
+
+export const Wrapper = ({children, showIn=false}) => {
   const navigate = useNavigate()
 
   return (
     <Container>
       <Header>
         <Brand onClick={() => navigate('/')}><Logo src="/logo192.png" />GraphFlow</Brand>
+        <FlexGrow />
+        {showIn &&
+          <Fragment>
+            <LoginButton onClick={() => navigate('/login')}>Log in</LoginButton>
+            <RegisterButton onClick={() => navigate('/register')}>Sign up</RegisterButton>
+          </Fragment>
+        }
       </Header>
       <Content>
         {children}

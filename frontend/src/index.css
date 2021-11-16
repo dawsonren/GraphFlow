@@ -10,6 +10,8 @@
   --yellow: #f4be40;
   --green: #32a852;
   --white: #FFFFFF;
+  --accent: #A663CC;
+  --accent-shade: #9546C3;
 }
 
 body {
@@ -19,7 +21,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-input {
+input, button {
   font-family: 'Oxygen', 'Helvetica Neue', sans-serif;
 }
 
