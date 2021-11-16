@@ -11,7 +11,7 @@ import { Wrapper } from '../components/containers/Wrapper'
 import { Row, Column, Link, FormInput, FormInputLabel, FormSubmitButton } from '../components/styled'
 
 
-function RegisterScreen({auth, propErrors}) {
+export const RegisterScreen = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -82,16 +82,3 @@ function RegisterScreen({auth, propErrors}) {
     </Wrapper>
   )
 }
-
-RegisterScreen.propTypes = {
-  registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
-
-export { RegisterScreen }
