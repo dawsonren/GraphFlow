@@ -47,7 +47,7 @@ export const LoginScreen = () => {
           <Column>
             <FormInputLabel htmlFor='password'>Password</FormInputLabel>
             <FormInput onChange={(e) => setPassword(e.target.value)} value={password} error={errors.name} id='password' type='password' />
-            <FormSubmitButton type="submit">Sign up</FormSubmitButton>
+            <FormSubmitButton type="submit">Log in</FormSubmitButton>
           </Column>
         </form>
       </Column>

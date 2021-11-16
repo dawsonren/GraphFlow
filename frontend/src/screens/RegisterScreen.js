@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { RiArrowLeftSLine } from 'react-icons/ri'
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { registerUser } from "../redux/actions/authActions";
 import classnames from "classnames";
 
 import { Wrapper } from '../components/containers/Wrapper'
@@ -20,10 +19,6 @@ export const RegisterScreen = () => {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    setErrors(propErrors)
-  }, [propErrors])
-
   function createUser(e) {
     e.preventDefault()
 
@@ -34,7 +29,7 @@ export const RegisterScreen = () => {
       password2: password2
     }
 
-    registerUser(newUser)
+    console.log(newUser)
   }
 
   function updateForm(e) {
