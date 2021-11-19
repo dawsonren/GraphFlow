@@ -44,7 +44,7 @@ require("./config/passport")(passport);
 
 // Routes
 app.use("/api/users", users);
-app.use('/graph', graphRouter);
+app.use('/api/graph', graphRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

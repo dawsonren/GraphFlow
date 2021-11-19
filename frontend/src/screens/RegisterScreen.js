@@ -6,8 +6,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
 
+import { registerUser } from '../api/api-requests'
 import { Wrapper } from '../components/containers/Wrapper'
-import { Row, Column, Link, FormInput, FormInputLabel, FormSubmitButton } from '../components/styled'
+import { Row, Column, Link, FormInput, FormInputLabel, FormSubmitButton, Error } from '../components/styled'
 
 
 export const RegisterScreen = () => {
@@ -19,7 +20,7 @@ export const RegisterScreen = () => {
 
   const navigate = useNavigate()
 
-  function createUser(e) {
+  async function createUser(e) {
     e.preventDefault()
 
     const newUser = {
@@ -29,11 +30,14 @@ export const RegisterScreen = () => {
       password2: password2
     }
 
-    console.log(newUser)
-  }
-
-  function updateForm(e) {
-    console.log(e)
+    try {
+      const { data, error } = await registerUser(newUser)
+      navigate('/create-graph')
+    } catch (error) {
+      if (error.response) {
+        setErrors(error.response.data)
+      }
+    }
   }
 
   return (
@@ -50,26 +54,26 @@ export const RegisterScreen = () => {
           <Column>
             <FormInputLabel htmlFor='name'>Name</FormInputLabel>
             <FormInput onChange={(e) => setName(e.target.value)} value={name}
-              error={errors.name} id='name' type='text'  className={classnames("", { invalid: errors.name })} />
-            <span style={{color: 'var(--red)'}}>{errors.name}</span>
+              error={errors.name} id='name' type='text' className={classnames("", { invalid: errors.name })} />
+            <Error>{errors.name}</Error>
           </Column>
           <Column>
             <FormInputLabel htmlFor='email'>Email</FormInputLabel>
             <FormInput onChange={(e) => setEmail(e.target.value)} value={email}
               error={errors.name} id='email' type='email' className={classnames("", { invalid: errors.email })} />
-            <span style={{color: 'var(--red)'}}>{errors.email}</span>
+            <Error>{errors.email}</Error>
           </Column>
           <Column>
             <FormInputLabel htmlFor='password'>Password</FormInputLabel>
             <FormInput onChange={(e) => setPassword(e.target.value)} value={password}
               error={errors.name} id='password' type='password' className={classnames("", { invalid: errors.password })} />
-            <span style={{color: 'var(--red)'}}>{errors.password}</span>
+            <Error>{errors.password}</Error>
           </Column>
           <Column>
             <FormInputLabel htmlFor='password2'>Confirm Password</FormInputLabel>
             <FormInput onChange={(e) => setPassword2(e.target.value)} value={password2}
               error={errors.name} id='password2' type='password' className={classnames("", { invalid: errors.password2 })} />
-            <span style={{color: 'var(--red)'}}>{errors.password2}</span>
+            <Error>{errors.password2}</Error>
             <FormSubmitButton type="submit">Sign up</FormSubmitButton>
           </Column>
         </form>

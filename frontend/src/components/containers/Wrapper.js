@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import { FlexGrow, LoginButton, RegisterButton } from '../styled'
 
@@ -42,16 +43,22 @@ const Brand = styled.div`
   cursor: pointer;
 `
 
+const AccountButton = styled(LoginButton)`
+  width: 95px;
+`
+
 
 export const Wrapper = ({children, showIn=false}) => {
   const navigate = useNavigate()
+  const user = useSelector(data => data.user)
 
   return (
     <Container>
       <Header>
         <Brand onClick={() => navigate('/')}><Logo src="/logo192.png" />GraphFlow</Brand>
         <FlexGrow />
-        {showIn &&
+        {user.isAuthenticated ?
+          <AccountButton onClick={() => navigate('/account')}>My Account</AccountButton> :
           <Fragment>
             <LoginButton onClick={() => navigate('/login')}>Log in</LoginButton>
             <RegisterButton onClick={() => navigate('/register')}>Sign up</RegisterButton>

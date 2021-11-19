@@ -111,3 +111,10 @@ export const FormSubmitButton = styled.button`
     background-color: var(--accent-shade);
   }
 `
+
+export const Error = styled.span`
+  align-self: flex-start;
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 3px;
+`

@@ -1,20 +1,48 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const keys = require('../config/keys');
 
 // Load input validation
-const validateRegisterInput = require("../validation/register");
-const validateLoginInput = require("../validation/login");
+const validateRegisterInput = require('../validation/register');
+const validateLoginInput = require('../validation/login');
 
 // Load User model
-const User = require("../models/User");
+const User = require('../models/User');
+
+// @route POST api/users/auth
+// @desc Authenticate user
+// @access Public
+router.get('/auth', (req, res) => {
+  // "Token Bearer ..."
+  const token = req.headers.authorization.slice(13)
+
+  jwt.verify(token, keys.secretOrKey, function(err, decoded) {
+    if (err) {
+      return res.status(401).json({ message: 'Invalid Credentials.' })
+    } else {
+      User.findById(decoded.id).then(user => {
+        if (user) {
+          return res.json({
+            user: {
+              name: user.name,
+              created_date: user.date
+            }
+          })
+        } else {
+          return res.status(500).json({ message: 'User not found.' })
+        }
+      })
+
+    }
+  })
+})
 
 // @route POST api/users/register
 // @desc Register user
 // @access Public
-router.post("/register", (req, res) => {
+router.post('/register', (req, res) => {
   // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
@@ -23,7 +51,7 @@ router.post("/register", (req, res) => {
   }
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
-      return res.status(400).json({ email: "Email already exists" });
+      return res.status(400).json({ email: 'Email already exists' });
     } else {
       const newUser = new User({
         name: req.body.name,
@@ -48,7 +76,7 @@ router.post("/register", (req, res) => {
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
-router.post("/login", (req, res) => {
+router.post('/login', (req, res) => {
   // Form validation
   const { errors, isValid } = validateLoginInput(req.body);
   // Check validation
@@ -63,7 +91,7 @@ router.post("/login", (req, res) => {
   User.findOne({ email }).then(user => {
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ emailnotfound: 'Email not found' });
     }
     // Check password
     bcrypt.compare(password, user.password).then(isMatch => {
@@ -84,14 +112,14 @@ router.post("/login", (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token: 'Bearer ' + token
             });
           }
         );
       } else {
         return res
           .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
+          .json({ passwordincorrect: 'Incorrect password' });
       }
     });
   });

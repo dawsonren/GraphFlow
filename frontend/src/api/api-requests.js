@@ -1,12 +1,28 @@
 import {
+  tokenAction,
+  registerUserAction, loginUserAction,
   getGraphAction, createGraphAction, deleteGraphAction, updateGraphAction
 } from './api-actions'
 
-import axios from 'axios'
+import { axiosApi } from './http'
 
-const axiosApi = axios.create({
-  baseURL: 'http://localhost:9000'
-});
+export async function tokenAuth(){
+  const { data } = await axiosApi(tokenAction());
+
+  return data;
+}
+
+export async function registerUser(user) {
+  const { data, errors } = await axiosApi(registerUserAction(user))
+
+  return { data, errors }
+}
+
+export async function loginUser(user) {
+  const { data, errors } = await axiosApi(loginUserAction(user))
+
+  return { data, errors }
+}
 
 export async function getGraph(id) {
   const { data } = await axiosApi(getGraphAction(id))
