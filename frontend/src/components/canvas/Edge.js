@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { useOutsideClick } from '../../utils/use-outside-click';
-import { FlexGrow, DropdownMenu, DropdownMenuRow } from '../styled'
+import { FlexGrow, DropdownMenu, DropdownMenuRow, SmallInput } from '../styled'
 
 const ValueContainer = styled.div`
   position: absolute;
@@ -19,23 +19,10 @@ const ValueContainer = styled.div`
   justify-content: center;
   transform: rotate(${props => props.angle}deg);
   padding: 0px 4px;
+  user-select: none;
 
   &:hover {
     background-color: var(--black-2);
-  }
-`
-
-const SmallInput = styled.input`
-  border: 0.5px solid var(--black-3);
-  border-radius: 3px;
-  width: 20px;
-  height: 12px;
-  background-color: inherit;
-  text-align: center;
-  margin-right: 3px;
-
-  &:hover {
-    border-color: var(--black-2);
   }
 `
 
@@ -47,7 +34,7 @@ const RedSpan = styled.span`
   color: var(--red);
 `
 
-export const Edge = ({edge, nodeRadius, showEdgeMenu, setShowEdgeMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge}) => {
+export const Edge = ({edge, nodeRadius, showMenu, setShowMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge}) => {
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
   const fromY = edge.display_data.fromY
@@ -86,7 +73,7 @@ export const Edge = ({edge, nodeRadius, showEdgeMenu, setShowEdgeMenu, setWeight
 
   const edgeRef = useRef(null)
 
-  useOutsideClick(edgeRef, () => showEdgeMenu === edge.id && setShowEdgeMenu(false))
+  useOutsideClick(edgeRef, () => showMenu === edge.id && setShowMenu(false))
 
   const [showWeight, setShowWeight] = useState(edge.weight)
   const [showMinFlow, setShowMinFlow] = useState(edge.min_flow || "-")
@@ -119,7 +106,7 @@ export const Edge = ({edge, nodeRadius, showEdgeMenu, setShowEdgeMenu, setWeight
         <path d={`M${arrowStartX},${arrowStartY} L${arrowEndX},${arrowEndY}`}
           style={{stroke: 'var(--secondary)', strokeWidth: '2px', fill: 'none', markerEnd: 'url(#arrow)'}} />
       </svg>
-      <div ref={edgeRef} onClick={() => mode === 'delete' ? deleteEdge(edge) : setShowEdgeMenu(edge.id)}>
+      <div ref={edgeRef} onClick={() => mode === 'delete' ? deleteEdge(edge) : setShowMenu(edge.id)}>
         <ValueContainer top={valueY} left={valueX} angle={angle * 180 / Math.PI}>
           <p style={{margin: 0, padding: 0}}>
             {showWeight}/
@@ -127,7 +114,7 @@ export const Edge = ({edge, nodeRadius, showEdgeMenu, setShowEdgeMenu, setWeight
             <GreenSpan>{showMaxFlow}</GreenSpan>
           </p>
         </ValueContainer>
-        {showEdgeMenu === edge.id &&
+        {showMenu === edge.id &&
           <DropdownMenu top={valueY + 10} left={valueX + 10} width={150}>
             <DropdownMenuRow>Edge Weight <FlexGrow /><SmallInput value={showWeight} onChange={updateWeight} /></DropdownMenuRow>
             <DropdownMenuRow>Edge Min Flow <FlexGrow /><SmallInput value={showMinFlow} onChange={updateMinFlow} /></DropdownMenuRow>

@@ -32,6 +32,7 @@ export const DropdownMenuRow = styled(Row)`
   height: 20px;
   padding-left: 2px;
   border-radius: 5px;
+  min-width: 100px;
 
   &:hover {
     background-color: var(--black-4);
@@ -117,4 +118,33 @@ export const Error = styled.span`
   color: var(--red);
   font-size: 12px;
   margin-top: 3px;
+`
+
+export const Button = styled.button`
+  min-width: 70px;
+  min-height: 30px;
+  font-size: 13px;
+  border: 0.5px solid var(--black);
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--black-2);
+  background-color: inherit;
+
+  &:hover {
+    color: var(--black);
+  }
+`
+
+export const SmallInput = styled.input`
+  border: 0.5px solid var(--black-3);
+  border-radius: 3px;
+  width: 20px;
+  height: 12px;
+  background-color: inherit;
+  text-align: center;
+  margin-right: 3px;
+
+  &:hover {
+    border-color: var(--black-2);
+  }
 `

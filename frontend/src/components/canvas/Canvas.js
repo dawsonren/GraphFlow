@@ -13,7 +13,6 @@ const CanvasBase = styled.div`
 export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
-  const [showEdgeMenu, setShowEdgeMenu] = useState(false)
 
   const [nodes, setNodes] = useState(graphJson.nodes)
   const [edges, setEdges] = useState(graphJson.edges)
@@ -81,7 +80,9 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
         left: nodeLeft,
         radius: nodeRadius,
       },
-      id: nodeCounter
+      id: `n${nodeCounter}`,
+      name: '',
+      type: ''
     }
     setNodeCounter(nodeCounter + 1)
     newNodeOnGraph(newNode)
@@ -96,6 +97,23 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
     const newEdges = oldEdges.filter((e) => !related_edge_ids.includes(e.id))
     setGraphJson({nodes: newNodes, edges: newEdges})
   }
+
+  function setNodeValueOnGraph(field) {
+    return (node, value) => {
+      const oldNodes = [...graphJson.nodes]
+      const newNodes = oldNodes.map((n) => {
+        if (n.id === node.id) {
+          // It's ok to modify e, since it's passed by value.
+          n[field] = value
+        }
+        return n
+      })
+      setGraphJson({...graphJson, nodes: newNodes})
+    }
+  }
+
+  const setNodeNameOnGraph = setNodeValueOnGraph('name')
+  const setNodeTypeOnGraph = setNodeValueOnGraph('type')
 
   ///
   /// ADD EDGE FUNCTIONS
@@ -155,8 +173,6 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   }, [fromNode, toNode])
 
   function handleAddEdge() {
-    const weight = 5;
-
     const newEdge = {
       display_data: {
         fromX: fromNode.display_data.left + nodeRadius,
@@ -166,10 +182,10 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
       },
       from: fromNode.id,
       to: toNode.id,
-      weight: weight,
+      weight: 5,
       min_flow: null,
       max_flow: null,
-      id: edgeCounter
+      id: `e${edgeCounter}`
     }
 
     setEdgeCounter(edgeCounter + 1)
@@ -198,13 +214,13 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
         return (
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
-            mode={mode} handleNodeClick={handleNodeClick} />
+            mode={mode} handleNodeClick={handleNodeClick} setName={setNodeNameOnGraph} setType={setNodeTypeOnGraph} />
         )
       })}
       {edges.map((edge, i) => {
         return (
           <Edge key={i} edge={edge} nodeRadius={nodeRadius}
-            showEdgeMenu={showEdgeMenu} setShowEdgeMenu={(input) => mode === 'select' && setShowEdgeMenu(input)}
+            showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
             setWeight={setEdgeWeightOnGraph} setMinFlow={setEdgeMinFlowOnGraph} setMaxFlow={setEdgeMaxFlowOnGraph}
             mode={mode} deleteEdge={deleteEdge} />
         )
