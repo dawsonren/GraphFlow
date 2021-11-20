@@ -133,6 +133,8 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
 
   // Update node and edge position
   function setNodePosOnGraph(node, value) {
+    if (!inBounds(value.top, value.left)) { return }
+
     // Update node position
     const oldNodes = [...graphJson.nodes]
     const newNodes = oldNodes.map((n) => {
@@ -186,6 +188,18 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   const setEdgeMinFlowOnGraph = setEdgeValueOnGraph('min_flow')
   const setEdgeMaxFlowOnGraph = setEdgeValueOnGraph('max_flow')
 
+  function setEdgeCurveOnGraph(edge, value) {
+    const oldEdges = [...graphJson.edges]
+    const newEdges = oldEdges.map((e) => {
+      if (e.id === edge.id) {
+        // It's ok to modify e, since it's passed by value.
+        e['display_data']['curve'] = value
+      }
+      return e
+    })
+    setGraphJson({...graphJson, edges: newEdges})
+  }
+
   function handleNodeClick(e, node) {
     // Stop from bubbling up to canvasHandleClick
     e.stopPropagation()
@@ -223,6 +237,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
         fromY: fromNode.display_data.top + nodeRadius,
         toX: toNode.display_data.left + nodeRadius,
         toY: toNode.display_data.top + nodeRadius,
+        curve: 0
       },
       from: fromNode.id,
       to: toNode.id,
@@ -267,7 +282,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
           <Edge key={i} edge={edge} nodeRadius={nodeRadius} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
             setWeight={setEdgeWeightOnGraph} setMinFlow={setEdgeMinFlowOnGraph} setMaxFlow={setEdgeMaxFlowOnGraph}
-            mode={mode} deleteEdge={deleteEdge} />
+            mode={mode} deleteEdge={deleteEdge} setCurve={setEdgeCurveOnGraph} />
         )
       })}
     </CanvasBase>

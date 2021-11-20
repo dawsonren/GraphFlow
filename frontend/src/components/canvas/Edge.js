@@ -34,7 +34,7 @@ const RedSpan = styled.span`
   color: var(--red);
 `
 
-export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge}) => {
+export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge, setCurve}) => {
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
   const fromY = edge.display_data.fromY
@@ -52,6 +52,13 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
   // For arctan, since range is not the full circle
   const flipConstant = Math.sign(toX - fromX)
 
+  // Calculate curvature - +/- 1/4 of the length, going normal to the midpoint
+  const arrowLength = Math.sqrt(Math.pow(fromX - toX, 2) + Math.pow(fromY - toY, 2))
+  const magCurve = 0.5 * arrowLength * edge.display_data.curve
+
+  const curveX = magCurve * Math.sin(angle + 90)
+  const curveY = magCurve * Math.cos(angle + 90)
+
   // The arrow should originate from the edge of the from node, not the center
   const reduceStartX = flipConstant * Math.cos(angle) * nodeRadius
   const reduceStartY = flipConstant * Math.sin(angle) * nodeRadius
@@ -65,9 +72,13 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
   const arrowEndX = toX - edgeLeft - reduceEndX
   const arrowEndY = toY - edgeTop - reduceEndY
 
+  // Quadratic Bezier Curve Control point, default at midpoint
+  const controlX = curveX + (arrowStartX + arrowEndX) / 2
+  const controlY = curveY + (arrowStartY + arrowEndY) / 2
+
   // Shift by total width/length of ValueContainer
-  const valueX = (arrowStartX + arrowEndX - 28) / 2
-  const valueY = (arrowStartY + arrowEndY - 20) / 2
+  const valueX = (curveX + arrowStartX + arrowEndX - 28) / 2
+  const valueY = (curveY + arrowStartY + arrowEndY - 20) / 2
 
   const edgeRef = useRef(null)
 
@@ -76,6 +87,7 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
   const [showWeight, setShowWeight] = useState(edge.weight)
   const [showMinFlow, setShowMinFlow] = useState(edge.min_flow || "-")
   const [showMaxFlow, setShowMaxFlow] = useState(edge.max_flow || "-")
+  const [showCurve, setShowCurve] = useState(edge.display_data.curve)
 
   function updateValue(setShowValue, setValue) {
     return (e) => {
@@ -93,6 +105,16 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
   const updateMinFlow = updateValue(setShowMinFlow, setMinFlow)
   const updateMaxFlow = updateValue(setShowMaxFlow, setMaxFlow)
 
+  function updateCurve(e) {
+    setShowCurve(e.target.value)
+
+    // only update if value is valid
+    const value = parseFloat(e.target.value)
+    if (Number.isFinite(value) && Math.abs(value) <= 1) {
+      setCurve(edge, value)
+    }
+  }
+
   return (
     <div style={{position: 'absolute', top: `${offsets.top + edgeTop}px`, left: `${offsets.left + edgeLeft}px`}}>
       <svg width={width + markerSize} height={height + markerSize}>
@@ -101,7 +123,7 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
             <path d="M2,2 L2,10 L10,6 L2,2" style={{fill: 'var(--secondary)'}} />
           </marker>
         </defs>
-        <path d={`M${arrowStartX},${arrowStartY} L${arrowEndX},${arrowEndY}`}
+        <path d={`M${arrowStartX},${arrowStartY} Q${controlX},${controlY} ${arrowEndX},${arrowEndY}`}
           style={{stroke: 'var(--secondary)', strokeWidth: '2px', fill: 'none', markerEnd: 'url(#arrow)'}} />
       </svg>
       <div ref={edgeRef} onClick={() => mode === 'delete' ? deleteEdge(edge) : setShowMenu(edge.id)}>
@@ -117,6 +139,7 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
             <DropdownMenuRow>Edge Weight <FlexGrow /><SmallInput value={showWeight} onChange={updateWeight} /></DropdownMenuRow>
             <DropdownMenuRow>Edge Min Flow <FlexGrow /><SmallInput value={showMinFlow} onChange={updateMinFlow} /></DropdownMenuRow>
             <DropdownMenuRow>Edge Max Flow <FlexGrow /><SmallInput value={showMaxFlow} onChange={updateMaxFlow} /></DropdownMenuRow>
+            <DropdownMenuRow>Curvature <FlexGrow /><SmallInput value={showCurve} onChange={updateCurve} style={{width: 35}} /></DropdownMenuRow>
           </DropdownMenu>
         }
       </div>
