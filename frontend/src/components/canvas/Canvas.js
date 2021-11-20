@@ -95,7 +95,8 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
       },
       id: `n${nodeCounter}`,
       name: '',
-      type: ''
+      type: '',
+      supply: 0
     }
     setNodeCounter(nodeCounter + 1)
     newNodeOnGraph(newNode)
@@ -187,6 +188,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   const setEdgeWeightOnGraph = setEdgeValueOnGraph('weight')
   const setEdgeMinFlowOnGraph = setEdgeValueOnGraph('min_flow')
   const setEdgeMaxFlowOnGraph = setEdgeValueOnGraph('max_flow')
+  const setEdgeSupplyOnGraph = setEdgeValueOnGraph('supply')
 
   function setEdgeCurveOnGraph(edge, value) {
     const oldEdges = [...graphJson.edges]
@@ -274,7 +276,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
             mode={mode} handleNodeClick={handleNodeClick} setName={setNodeNameOnGraph} setType={setNodeTypeOnGraph}
-            setPos={setNodePosOnGraph} canvasRef={canvasRef} />
+            setPos={setNodePosOnGraph} canvasRef={canvasRef} setSupply={setEdgeSupplyOnGraph} />
         )
       })}
       {edges.map((edge, i) => {

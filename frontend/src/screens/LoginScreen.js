@@ -29,7 +29,6 @@ export const LoginScreen = () => {
 
     try {
       const { data, error } = await loginUser(user)
-      console.log(data)
       if (data.token) {
         await setToken(data.token)
         await dispatch(authenticateUser(data.user))

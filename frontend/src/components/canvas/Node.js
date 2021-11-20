@@ -49,13 +49,14 @@ const RadioButton = ({trigger, input, updateType}) => {
 
 }
 
-export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType, setPos, canvasRef}) => {
+export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType, setPos, canvasRef, setSupply}) => {
   const nodeRef = useRef(null)
 
   useOutsideClick(nodeRef, () => showMenu === id && setShowMenu(false))
 
   const [showName, setShowName] = useState(node.name)
   const [showType, setShowType] = useState(node.type)
+  const [showSupply, setShowSupply] = useState(node.supply)
 
   // Dragging Functionality
   useDrag(nodeRef, canvasRef, { onPointerUp: updatePos })
@@ -81,6 +82,16 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
     }
   }
 
+  function updateSupply(e) {
+    setShowSupply(e.target.value)
+
+    // only update if value is valid
+    const value = parseInt(e.target.value)
+    if (Number.isInteger(value)) {
+      setSupply(node, value)
+    }
+  }
+
   return (
     <div ref={nodeRef} onClick={(e) => handleNodeClick(e, node)}>
       <Circle radius={node.display_data.radius} top={node.display_data.top + offsets.top} left={node.display_data.left + offsets.left}
@@ -93,13 +104,14 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
         <DropdownMenu top={node.display_data.top + node.display_data.radius + offsets.top}
           left={node.display_data.left + node.display_data.radius + offsets.left}
           width={177}>
-          <DropdownMenuRow style={{width: 175}}>Node name <FlexGrow /><SmallInput value={node.name} style={{width: 75}} onChange={updateName}/></DropdownMenuRow>
+          <DropdownMenuRow style={{width: 175}}>Node name <FlexGrow /><SmallInput value={showName} style={{width: 75}} onChange={updateName}/></DropdownMenuRow>
           <DropdownMenuRow style={{width: 175}}>
             Type <FlexGrow />
             <RadioButton trigger='s' input={node.type} updateType={updateType} />
             <RadioButton trigger='t' input={node.type} updateType={updateType} />
             <RadioButton trigger='' input={node.type} updateType={updateType} />
           </DropdownMenuRow>
+          <DropdownMenuRow style={{width: 175}}>Edge Supply (b) <FlexGrow /><SmallInput value={showSupply} onChange={updateSupply} /></DropdownMenuRow>
         </DropdownMenu>
       }
     </div>

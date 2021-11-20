@@ -143,10 +143,10 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
           </p>
         </ValueContainer>
         {showMenu === edge.id &&
-          <DropdownMenu top={valueY + 10} left={valueX + 10} width={150}>
+          <DropdownMenu top={valueY + 10} left={valueX + 10} width={175}>
             <DropdownMenuRow>Edge Weight <FlexGrow /><SmallInput value={showWeight} onChange={updateWeight} /></DropdownMenuRow>
-            <DropdownMenuRow>Edge Min Flow <FlexGrow /><SmallInput value={showMinFlow} onChange={updateMinFlow} /></DropdownMenuRow>
-            <DropdownMenuRow>Edge Max Flow <FlexGrow /><SmallInput value={showMaxFlow} onChange={updateMaxFlow} /></DropdownMenuRow>
+            <DropdownMenuRow>Edge Min Flow (u) <FlexGrow /><SmallInput value={showMinFlow} onChange={updateMinFlow} /></DropdownMenuRow>
+            <DropdownMenuRow>Edge Max Flow (l) <FlexGrow /><SmallInput value={showMaxFlow} onChange={updateMaxFlow} /></DropdownMenuRow>
             <DropdownMenuRow>Curvature <FlexGrow /><SmallInput value={showCurve} onChange={updateCurve} style={{width: 35}} /></DropdownMenuRow>
           </DropdownMenu>
         }
