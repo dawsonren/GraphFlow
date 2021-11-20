@@ -34,6 +34,14 @@ const RedSpan = styled.span`
   color: var(--red);
 `
 
+function cosd(x) {
+  return Math.cos(x * Math.PI / 180)
+}
+
+function sind(x) {
+  return Math.sin(x * Math.PI / 180)
+}
+
 export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge, setCurve}) => {
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
@@ -54,10 +62,10 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
 
   // Calculate curvature - +/- 1/4 of the length, going normal to the midpoint
   const arrowLength = Math.sqrt(Math.pow(fromX - toX, 2) + Math.pow(fromY - toY, 2))
-  const magCurve = 0.5 * arrowLength * edge.display_data.curve
+  const magCurve = 0.125 * arrowLength * edge.display_data.curve
 
-  const curveX = magCurve * Math.sin(angle + 90)
-  const curveY = magCurve * Math.cos(angle + 90)
+  const curveX = magCurve * Math.cos(angle + 90)
+  const curveY = magCurve * Math.sin(angle + 90)
 
   // The arrow should originate from the edge of the from node, not the center
   const reduceStartX = flipConstant * Math.cos(angle) * nodeRadius
@@ -117,7 +125,7 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
 
   return (
     <div style={{position: 'absolute', top: `${offsets.top + edgeTop}px`, left: `${offsets.left + edgeLeft}px`}}>
-      <svg width={width + markerSize} height={height + markerSize}>
+      <svg width={width + markerSize + Math.abs(magCurve)} height={height + markerSize + Math.abs(magCurve)}>
         <defs>
           <marker id="arrow" markerWidth={markerSize} markerHeight={markerSize} refX="2" refY="6" orient="auto">
             <path d="M2,2 L2,10 L10,6 L2,2" style={{fill: 'var(--secondary)'}} />
