@@ -34,7 +34,7 @@ const RedSpan = styled.span`
   color: var(--red);
 `
 
-export const Edge = ({edge, nodeRadius, showMenu, setShowMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge}) => {
+export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge}) => {
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
   const fromY = edge.display_data.fromY
@@ -46,8 +46,6 @@ export const Edge = ({edge, nodeRadius, showMenu, setShowMenu, setWeight, setMin
 
   const edgeLeft = Math.min(fromX, toX) - nodeRadius
   const edgeTop = Math.min(fromY, toY) - nodeRadius
-
-  const offsets = document.getElementById('graph-canvas').getBoundingClientRect()
 
   const angle = Math.atan((toY - fromY) / (toX - fromX))
   const reduceAmount = nodeRadius + 15

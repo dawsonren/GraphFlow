@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { RiAddCircleFill, RiArrowRightFill, RiCursorFill, RiDeleteBin7Fill, RiForbid2Line } from 'react-icons/ri';
+import { RiAddFill, RiDragMove2Fill, RiCursorFill, RiDeleteBin7Fill, RiForbid2Line } from 'react-icons/ri';
 
 import { Row } from '../styled'
 
@@ -42,10 +42,10 @@ const ModeRow = ({id, icon, selected, onClickCard, modeName}) => {
 }
 
 export const ModeSelector = ({mode, setMode, setGraphJson}) => {
-  const modes = ['add_node', 'add_edge', 'select', 'delete']
-  const modeNames = ['Add Node', 'Add Edge', 'Select', 'Delete']
-  const icons = [<RiAddCircleFill size={30} />,
-                 <RiArrowRightFill size={30} />,
+  const modes = ['add', 'move', 'select', 'delete']
+  const modeNames = ['Add', 'Move', 'Select', 'Delete']
+  const icons = [<RiAddFill size={30} />,
+                 <RiDragMove2Fill size={30} />,
                  <RiCursorFill size={30} />,
                  <RiDeleteBin7Fill size={30} />]
 

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { RiCheckboxBlankCircleLine, RiCheckboxBlankCircleFill } from 'react-icons/ri'
 
 import { useOutsideClick } from '../../utils/use-outside-click';
+import { useDrag } from '../../utils/use-drag'
 import { Row, FlexGrow, DropdownMenu, DropdownMenuRow, SmallInput } from '../styled'
 
 const Circle = styled.div`
@@ -29,6 +30,10 @@ const Circle = styled.div`
   ${props => props.highlight && `
     border: 2px solid var(--secondary);
   `}
+
+  ${props => props.grab && `
+    cursor: grab;
+  `}
 `
 
 const RadioButton = ({trigger, input, updateType}) => {
@@ -44,15 +49,16 @@ const RadioButton = ({trigger, input, updateType}) => {
 
 }
 
-export const Node = ({id, node, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType}) => {
+export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType, setPos, canvasRef}) => {
   const nodeRef = useRef(null)
 
   useOutsideClick(nodeRef, () => showMenu === id && setShowMenu(false))
 
-  const offsets = document.getElementById('graph-canvas').getBoundingClientRect()
-
   const [showName, setShowName] = useState(node.name)
   const [showType, setShowType] = useState(node.type)
+
+  // Dragging Functionality
+  useDrag(nodeRef, canvasRef, { onPointerUp: updatePos })
 
   function updateName(e) {
     const value = e.target.value
@@ -64,11 +70,23 @@ export const Node = ({id, node, highlight, setHighlight, showMenu, setShowMenu, 
     setType(node, type)
   }
 
+  function updatePos(e) {
+    if (mode === 'move') {
+      const newPos = {
+        top: e.clientY - offsets.top - node.display_data.radius,
+        left: e.clientX - offsets.left - node.display_data.radius,
+        radius: node.display_data.radius
+      }
+      setPos(node, newPos)
+    }
+  }
+
   return (
     <div ref={nodeRef} onClick={(e) => handleNodeClick(e, node)}>
       <Circle radius={node.display_data.radius} top={node.display_data.top + offsets.top} left={node.display_data.left + offsets.left}
         highlight={highlight === id} onMouseEnter={() => setHighlight(id)}
-        onMouseLeave={() => setHighlight(false)} onClick={() => setShowMenu(id)}>
+        onMouseLeave={() => setHighlight(false)} onClick={() => setShowMenu(id)}
+        grab={mode === 'move'}>
         <p>{node.name.slice(0, 3)}</p>
       </Circle>
       {showMenu === id &&
