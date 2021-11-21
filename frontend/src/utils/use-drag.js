@@ -16,14 +16,12 @@ export const useDrag = (dragRef, dropRef, options) => {
   }, [mouseDown])
 
   const handlePointerDown = (e) => {
-    e.preventDefault()
     setMouseDown(true)
 
     onPointerDown(e)
   }
 
   const handlePointerUp = (e) => {
-    e.preventDefault()
     if (isDragging) {
       onPointerUp(e)
     }
@@ -32,7 +30,6 @@ export const useDrag = (dragRef, dropRef, options) => {
   }
 
   const handlePointerMove = (e) => {
-    e.preventDefault()
     onPointerMove(e)
 
     if (isDragging) {

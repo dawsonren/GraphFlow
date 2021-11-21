@@ -98,7 +98,7 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
         setShowMenu(id)
       }
     } else {
-      handleNodeClick(node, e)
+      handleNodeClick(e, node)
     }
   }
 
@@ -114,7 +114,7 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
         <DropdownMenu top={node.display_data.top + node.display_data.radius + offsets.top}
           left={node.display_data.left + node.display_data.radius + offsets.left}
           width={177}>
-          <DropdownMenuRow style={{width: 175}}>Node name <FlexGrow /><SmallInput style={{width: 75}} /></DropdownMenuRow>
+          <DropdownMenuRow style={{width: 175}}>Node name <FlexGrow /><SmallInput style={{width: 75}} value={showName} onChange={updateName} /></DropdownMenuRow>
           <DropdownMenuRow style={{width: 175}}>
             Type <FlexGrow />
             <RadioButton trigger='s' input={node.type} updateType={updateType} />

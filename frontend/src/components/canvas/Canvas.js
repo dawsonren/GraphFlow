@@ -10,7 +10,7 @@ const CanvasBase = styled.div`
   height: ${props => props.height}px;
 `
 
-export const Canvas = ({graphJson, setGraphJson, mode='', setMode}) => {
+export const Canvas = ({graphJson, setGraphJson, mode, setMode}) => {
   // Utility
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -131,6 +131,7 @@ export const Canvas = ({graphJson, setGraphJson, mode='', setMode}) => {
 
   const setNodeNameOnGraph = setNodeValueOnGraph('name')
   const setNodeTypeOnGraph = setNodeValueOnGraph('type')
+  const setNodeSupplyOnGraph = setNodeValueOnGraph('supply')
 
   // Update node and edge position
   function setNodePosOnGraph(node, value) {
@@ -188,7 +189,6 @@ export const Canvas = ({graphJson, setGraphJson, mode='', setMode}) => {
   const setEdgeWeightOnGraph = setEdgeValueOnGraph('weight')
   const setEdgeMinFlowOnGraph = setEdgeValueOnGraph('min_flow')
   const setEdgeMaxFlowOnGraph = setEdgeValueOnGraph('max_flow')
-  const setEdgeSupplyOnGraph = setEdgeValueOnGraph('supply')
 
   function setEdgeCurveOnGraph(edge, value) {
     const oldEdges = [...graphJson.edges]
@@ -203,9 +203,6 @@ export const Canvas = ({graphJson, setGraphJson, mode='', setMode}) => {
   }
 
   function handleNodeClick(e, node) {
-    // Stop from bubbling up to canvasHandleClick
-    e.stopPropagation()
-
     if (mode === 'add_edge') {
       if (!fromNode) {
         setFromNode(node)
@@ -217,8 +214,6 @@ export const Canvas = ({graphJson, setGraphJson, mode='', setMode}) => {
       }
     } else if (mode === 'delete') {
       deleteNode(node)
-    } else {
-      setMode('select')
     }
   }
 
@@ -287,7 +282,7 @@ export const Canvas = ({graphJson, setGraphJson, mode='', setMode}) => {
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
             mode={mode} handleNodeClick={handleNodeClick} setName={setNodeNameOnGraph} setType={setNodeTypeOnGraph}
-            setPos={setNodePosOnGraph} canvasRef={canvasRef} setSupply={setEdgeSupplyOnGraph} />
+            setPos={setNodePosOnGraph} canvasRef={canvasRef} setSupply={setNodeSupplyOnGraph} />
         )
       })}
       {edges.map((edge, i) => {

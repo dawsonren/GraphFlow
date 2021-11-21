@@ -128,7 +128,7 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
   // Swap start and end so that the marker is contained within the value of the arrow line.
   return (
     <div style={{position: 'absolute', top: `${offsets.top + edgeTop - off}px`, left: `${offsets.left + edgeLeft - off}px`}}>
-      <svg width={width + markerSize + Math.abs(magCurve)} height={height + markerSize + 2 * Math.abs(magCurve)}>
+      <svg width={width + markerSize + 2 * Math.abs(magCurve)} height={height + markerSize + 2 * Math.abs(magCurve)}>
         <defs>
           <marker id='arrow' markerWidth={markerSize} markerHeight={markerSize} refX='1.5' refY='1.5' orient='auto'>
             <path d='M0,1.5 L6,3 L6,0 L0,1.5' style={{fill: 'var(--secondary)'}} />
