@@ -27,6 +27,7 @@ export const MainRouter = (props) => {
         <Routes>
           <Route path='/' element={<LandingScreen />} />
           <Route path='/graph' element={<GraphScreen />} />
+          <Route path='/graph/public' element={<GraphScreen pub={true} />} />
           <Route path='/login' element={<LoginScreen />} />
           <Route path='/register' element={<RegisterScreen />} />
           <Route path='/account'
