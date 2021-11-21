@@ -10,7 +10,7 @@ const CanvasBase = styled.div`
   height: ${props => props.height}px;
 `
 
-export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
+export const Canvas = ({graphJson, setGraphJson, mode='', setMode}) => {
   // Utility
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -44,9 +44,9 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
     setEdges(graphJson.edges)
   }, [graphJson])
 
-  // Reset edge adding when not on add mode
+  // Reset edge adding when not on add edge
   useEffect(() => {
-    if (mode !== 'add') {
+    if (mode !== 'add_edge') {
       setFromNode(null)
       setToNode(null)
     }
@@ -206,7 +206,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
     // Stop from bubbling up to canvasHandleClick
     e.stopPropagation()
 
-    if (mode === 'add') {
+    if (mode === 'add_edge') {
       if (!fromNode) {
         setFromNode(node)
       } else if (!toNode) {
@@ -217,29 +217,40 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
       }
     } else if (mode === 'delete') {
       deleteNode(node)
+    } else {
+      setMode('select')
     }
   }
 
   useEffect(() => {
-    if (fromNode && toNode && mode === 'add') {
+    if (fromNode && toNode && mode === 'add_edge') {
       // Don't allow multiple edges from a certain to-from node pair
-      const notDuplicate = graphJson.edges.filter((edge) => edge.from === fromNode.id && edge.to === toNode.id).length === 0
+      const notDuplicate = graphJson.edges.filter(edge => edge.from === fromNode.id && edge.to === toNode.id).length === 0
       // Don't allow nodes to link to themselves
       const notSelfLink = fromNode.id !== toNode.id
+
+      // Creating a reciprocal pair? Need to change curvature!
+      const reciprocal = graphJson.edges.filter(edge => edge.to === fromNode.id && edge.from === toNode.id)
+
       if (notDuplicate && notSelfLink) {
-        handleAddEdge()
+        if (reciprocal.length !== 0) {
+          setEdgeCurveOnGraph(reciprocal[0], -1)
+          handleAddEdge(1)
+        } else {
+          handleAddEdge(0)
+        }
       }
     }
   }, [fromNode, toNode])
 
-  function handleAddEdge() {
+  function handleAddEdge(curve) {
     const newEdge = {
       display_data: {
         fromX: fromNode.display_data.left + nodeRadius,
         fromY: fromNode.display_data.top + nodeRadius,
         toX: toNode.display_data.left + nodeRadius,
         toY: toNode.display_data.top + nodeRadius,
-        curve: 0
+        curve: curve
       },
       from: fromNode.id,
       to: toNode.id,
@@ -263,7 +274,7 @@ export const Canvas = ({graphJson, setGraphJson, mode=''}) => {
   }
 
   function canvasHandleClick(e) {
-    if (mode === 'add') {
+    if (mode === 'add_node') {
       handleAddNode(e)
     }
   }

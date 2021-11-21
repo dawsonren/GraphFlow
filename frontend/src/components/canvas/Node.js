@@ -92,11 +92,21 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
     }
   }
 
+  function handleClick(e) {
+    if (mode === 'select') {
+      if (showMenu !== id) {
+        setShowMenu(id)
+      }
+    } else {
+      handleNodeClick(node, e)
+    }
+  }
+
   return (
-    <div ref={nodeRef} onClick={(e) => handleNodeClick(e, node)}>
+    <div ref={nodeRef} onClick={handleClick}>
       <Circle radius={node.display_data.radius} top={node.display_data.top + offsets.top} left={node.display_data.left + offsets.left}
         highlight={highlight === id} onMouseEnter={() => setHighlight(id)}
-        onMouseLeave={() => setHighlight(false)} onClick={() => setShowMenu(id)}
+        onMouseLeave={() => setHighlight(false)}
         grab={mode === 'move'}>
         <p>{node.name.slice(0, 3)}</p>
       </Circle>
@@ -104,14 +114,14 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
         <DropdownMenu top={node.display_data.top + node.display_data.radius + offsets.top}
           left={node.display_data.left + node.display_data.radius + offsets.left}
           width={177}>
-          <DropdownMenuRow style={{width: 175}}>Node name <FlexGrow /><SmallInput value={showName} style={{width: 75}} onChange={updateName}/></DropdownMenuRow>
+          <DropdownMenuRow style={{width: 175}}>Node name <FlexGrow /><SmallInput style={{width: 75}} /></DropdownMenuRow>
           <DropdownMenuRow style={{width: 175}}>
             Type <FlexGrow />
             <RadioButton trigger='s' input={node.type} updateType={updateType} />
             <RadioButton trigger='t' input={node.type} updateType={updateType} />
             <RadioButton trigger='' input={node.type} updateType={updateType} />
           </DropdownMenuRow>
-          <DropdownMenuRow style={{width: 175}}>Edge Supply (b) <FlexGrow /><SmallInput value={showSupply} onChange={updateSupply} /></DropdownMenuRow>
+          <DropdownMenuRow style={{width: 175}}>Supply (b) <FlexGrow /><SmallInput value={showSupply} onChange={updateSupply} /></DropdownMenuRow>
         </DropdownMenu>
       }
     </div>

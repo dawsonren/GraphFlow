@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { RiAddFill, RiDragMove2Fill, RiCursorFill, RiDeleteBin7Fill, RiForbid2Line } from 'react-icons/ri';
+import { RiAddCircleLine, RiArrowRightLine, RiDragMove2Fill, RiCursorFill, RiDeleteBin7Fill, RiForbid2Line } from 'react-icons/ri';
 
 import { Row } from '../styled'
 
@@ -8,9 +8,9 @@ const Card = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 75px;
-  width: 75px;
-  border-radius: 15px;
+  height: 65px;
+  width: 65px;
+  border-radius: 12px;
   background-color: var(--black-3);
 
   &:hover {
@@ -42,9 +42,10 @@ const ModeRow = ({id, icon, selected, onClickCard, modeName}) => {
 }
 
 export const ModeSelector = ({mode, setMode, setGraphJson}) => {
-  const modes = ['add', 'move', 'select', 'delete']
-  const modeNames = ['Add', 'Move', 'Select', 'Delete']
-  const icons = [<RiAddFill size={30} />,
+  const modes = ['add_node', 'add_edge', 'move', 'select', 'delete']
+  const modeNames = ['Add Node', 'Add Edge', 'Move', 'Select', 'Delete']
+  const icons = [<RiAddCircleLine size={30} />,
+                 <RiArrowRightLine size={30} />,
                  <RiDragMove2Fill size={30} />,
                  <RiCursorFill size={30} />,
                  <RiDeleteBin7Fill size={30} />]

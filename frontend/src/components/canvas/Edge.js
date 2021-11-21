@@ -56,29 +56,31 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
   const edgeTop = Math.min(fromY, toY) - nodeRadius
 
   const angle = Math.atan((toY - fromY) / (toX - fromX))
-  const reduceAmount = nodeRadius + 15
+  const d_angle = angle * 180 / Math.PI
   // For arctan, since range is not the full circle
   const flipConstant = Math.sign(toX - fromX)
 
-  // Calculate curvature - +/- 1/4 of the length, going normal to the midpoint
+  // Calculate curvature - +/- 1/5 of the length, going normal to the midpoint
   const arrowLength = Math.sqrt(Math.pow(fromX - toX, 2) + Math.pow(fromY - toY, 2))
-  const magCurve = 0.125 * arrowLength * edge.display_data.curve
+  const magCurve = 0.2 * arrowLength * edge.display_data.curve
 
-  const curveX = magCurve * Math.cos(angle + 90)
-  const curveY = magCurve * Math.sin(angle + 90)
+  // Global offset helps us fit in the curvature
+  const off = Math.abs(magCurve)
+
+  // Create normals
+  const curveX = magCurve * Math.cos(angle + (Math.PI / 2))
+  const curveY = magCurve * Math.sin(angle + (Math.PI / 2))
 
   // The arrow should originate from the edge of the from node, not the center
-  const reduceStartX = flipConstant * Math.cos(angle) * nodeRadius
-  const reduceStartY = flipConstant * Math.sin(angle) * nodeRadius
+  const reduceX = flipConstant * Math.cos(angle) * nodeRadius
+  const reduceY = flipConstant * Math.sin(angle) * nodeRadius
 
-  // The arrow tip should touch the edge of the to node
-  const reduceEndX = flipConstant * Math.cos(angle) * reduceAmount
-  const reduceEndY = flipConstant * Math.sin(angle) * reduceAmount
-
-  const arrowStartX = fromX - edgeLeft + reduceStartX
-  const arrowStartY = fromY - edgeTop + reduceStartY
-  const arrowEndX = toX - edgeLeft - reduceEndX
-  const arrowEndY = toY - edgeTop - reduceEndY
+  // Swapped b/c of this tip (see the last one by T Scherer)
+  // https://stackoverflow.com/questions/31278293/svg-align-tip-of-marker-end-with-end-of-line
+  const arrowStartX = toX - edgeLeft - reduceX + off
+  const arrowStartY = toY - edgeTop - reduceY + off
+  const arrowEndX = fromX - edgeLeft + reduceX + off
+  const arrowEndY = fromY - edgeTop + reduceY + off
 
   // Quadratic Bezier Curve Control point, default at midpoint
   const controlX = curveX + (arrowStartX + arrowEndX) / 2
@@ -93,8 +95,8 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
   useOutsideClick(edgeRef, () => showMenu === edge.id && setShowMenu(false))
 
   const [showWeight, setShowWeight] = useState(edge.weight)
-  const [showMinFlow, setShowMinFlow] = useState(edge.min_flow || "-")
-  const [showMaxFlow, setShowMaxFlow] = useState(edge.max_flow || "-")
+  const [showMinFlow, setShowMinFlow] = useState(edge.min_flow || '-')
+  const [showMaxFlow, setShowMaxFlow] = useState(edge.max_flow || '-')
   const [showCurve, setShowCurve] = useState(edge.display_data.curve)
 
   function updateValue(setShowValue, setValue) {
@@ -123,19 +125,20 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
     }
   }
 
+  // Swap start and end so that the marker is contained within the value of the arrow line.
   return (
-    <div style={{position: 'absolute', top: `${offsets.top + edgeTop}px`, left: `${offsets.left + edgeLeft}px`}}>
-      <svg width={width + markerSize + Math.abs(magCurve)} height={height + markerSize + Math.abs(magCurve)}>
+    <div style={{position: 'absolute', top: `${offsets.top + edgeTop - off}px`, left: `${offsets.left + edgeLeft - off}px`}}>
+      <svg width={width + markerSize + Math.abs(magCurve)} height={height + markerSize + 2 * Math.abs(magCurve)}>
         <defs>
-          <marker id="arrow" markerWidth={markerSize} markerHeight={markerSize} refX="2" refY="6" orient="auto">
-            <path d="M2,2 L2,10 L10,6 L2,2" style={{fill: 'var(--secondary)'}} />
+          <marker id='arrow' markerWidth={markerSize} markerHeight={markerSize} refX='1.5' refY='1.5' orient='auto'>
+            <path d='M0,1.5 L6,3 L6,0 L0,1.5' style={{fill: 'var(--secondary)'}} />
           </marker>
         </defs>
         <path d={`M${arrowStartX},${arrowStartY} Q${controlX},${controlY} ${arrowEndX},${arrowEndY}`}
-          style={{stroke: 'var(--secondary)', strokeWidth: '2px', fill: 'none', markerEnd: 'url(#arrow)'}} />
+          style={{stroke: 'var(--secondary)', strokeWidth: '2px', fill: 'none', markerStart: 'url(#arrow)'}} />
       </svg>
       <div ref={edgeRef} onClick={() => mode === 'delete' ? deleteEdge(edge) : setShowMenu(edge.id)}>
-        <ValueContainer top={valueY} left={valueX} angle={angle * 180 / Math.PI}>
+        <ValueContainer top={valueY} left={valueX} angle={d_angle}>
           <p style={{margin: 0, padding: 0}}>
             {showWeight}/
             <RedSpan>{showMinFlow}</RedSpan>/
