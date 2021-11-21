@@ -32,7 +32,7 @@ export const RegisterScreen = () => {
 
     try {
       const { data, error } = await registerUser(newUser)
-      navigate('/create-graph')
+      navigate('/graph')
     } catch (error) {
       if (error.response) {
         setErrors(error.response.data)

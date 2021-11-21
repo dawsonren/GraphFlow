@@ -10,7 +10,7 @@ import { Row, Column, Button } from '../components/styled'
 import { useOutsideClick } from '../utils/use-outside-click';
 
 
-export const CreateGraphScreen = () => {
+export const GraphScreen = () => {
   const [graphId, setGraphId] = useState('5')
   const [graphData, setGraphData] = useState('')
   const [graphJson, setGraphJson] = useState({nodes: [], edges: []})

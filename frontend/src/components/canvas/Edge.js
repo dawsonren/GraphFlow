@@ -42,7 +42,7 @@ function sind(x) {
   return Math.sin(x * Math.PI / 180)
 }
 
-export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeight, setMinFlow, setMaxFlow, mode, deleteEdge, setCurve}) => {
+export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setCost, setMinFlow, setMaxFlow, mode, deleteEdge, setCurve}) => {
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
   const fromY = edge.display_data.fromY
@@ -94,10 +94,15 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
 
   useOutsideClick(edgeRef, () => showMenu === edge.id && setShowMenu(false))
 
-  const [showWeight, setShowWeight] = useState(edge.weight)
+  const [showCost, setShowCost] = useState(edge.cost)
   const [showMinFlow, setShowMinFlow] = useState(edge.min_flow || '-')
   const [showMaxFlow, setShowMaxFlow] = useState(edge.max_flow || '-')
   const [showCurve, setShowCurve] = useState(edge.display_data.curve)
+
+  // Sync curvature, not sure why we need this...?
+  useEffect(() => {
+    setShowCurve(edge.display_data.curve)
+  }, [edge.display_data.curve])
 
   function updateValue(setShowValue, setValue) {
     return (e) => {
@@ -111,7 +116,7 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
     }
   }
 
-  const updateWeight = updateValue(setShowWeight, setWeight)
+  const updateCost = updateValue(setShowCost, setCost)
   const updateMinFlow = updateValue(setShowMinFlow, setMinFlow)
   const updateMaxFlow = updateValue(setShowMaxFlow, setMaxFlow)
 
@@ -140,14 +145,14 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setWeigh
       <div ref={edgeRef} onClick={() => mode === 'delete' ? deleteEdge(edge) : setShowMenu(edge.id)}>
         <ValueContainer top={valueY} left={valueX} angle={d_angle}>
           <p style={{margin: 0, padding: 0}}>
-            {showWeight}/
+            {showCost}/
             <RedSpan>{showMinFlow}</RedSpan>/
             <GreenSpan>{showMaxFlow}</GreenSpan>
           </p>
         </ValueContainer>
         {showMenu === edge.id &&
           <DropdownMenu top={valueY + 10} left={valueX + 10} width={175}>
-            <DropdownMenuRow>Edge Weight <FlexGrow /><SmallInput value={showWeight} onChange={updateWeight} /></DropdownMenuRow>
+            <DropdownMenuRow>Edge Cost <FlexGrow /><SmallInput value={showCost} onChange={updateCost} /></DropdownMenuRow>
             <DropdownMenuRow>Edge Min Flow (u) <FlexGrow /><SmallInput value={showMinFlow} onChange={updateMinFlow} /></DropdownMenuRow>
             <DropdownMenuRow>Edge Max Flow (l) <FlexGrow /><SmallInput value={showMaxFlow} onChange={updateMaxFlow} /></DropdownMenuRow>
             <DropdownMenuRow>Curvature <FlexGrow /><SmallInput value={showCurve} onChange={updateCurve} style={{width: 35}} /></DropdownMenuRow>

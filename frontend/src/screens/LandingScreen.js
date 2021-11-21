@@ -10,7 +10,7 @@ export const LandingScreen = () => {
   return (
     <Wrapper showIn={true}>
       <h1>Landing Screen</h1>
-      <button onClick={() => navigate('/create-graph')}>Go to Create Graph</button>
+      <button onClick={() => navigate('/graph')}>Create a Graph</button>
     </Wrapper>
   )
 }

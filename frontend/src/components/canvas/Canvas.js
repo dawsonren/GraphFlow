@@ -186,7 +186,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode}) => {
     }
   }
 
-  const setEdgeWeightOnGraph = setEdgeValueOnGraph('weight')
+  const setEdgeCostOnGraph = setEdgeValueOnGraph('cost')
   const setEdgeMinFlowOnGraph = setEdgeValueOnGraph('min_flow')
   const setEdgeMaxFlowOnGraph = setEdgeValueOnGraph('max_flow')
 
@@ -249,7 +249,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode}) => {
       },
       from: fromNode.id,
       to: toNode.id,
-      weight: 5,
+      cost: 5,
       min_flow: null,
       max_flow: null,
       id: `e${edgeCounter}`
@@ -289,7 +289,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode}) => {
         return (
           <Edge key={i} edge={edge} nodeRadius={nodeRadius} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
-            setWeight={setEdgeWeightOnGraph} setMinFlow={setEdgeMinFlowOnGraph} setMaxFlow={setEdgeMaxFlowOnGraph}
+            setCost={setEdgeCostOnGraph} setMinFlow={setEdgeMinFlowOnGraph} setMaxFlow={setEdgeMaxFlowOnGraph}
             mode={mode} deleteEdge={deleteEdge} setCurve={setEdgeCurveOnGraph} />
         )
       })}

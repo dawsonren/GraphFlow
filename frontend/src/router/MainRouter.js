@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 import { LandingScreen } from '../screens/LandingScreen'
 import { AccountScreen } from '../screens/AccountScreen'
-import { CreateGraphScreen } from '../screens/CreateGraphScreen'
+import { GraphScreen } from '../screens/GraphScreen'
 import { LoginScreen } from '../screens/LoginScreen'
 import { RegisterScreen } from '../screens/RegisterScreen'
 
@@ -26,7 +26,7 @@ export const MainRouter = (props) => {
       <div id='main-screen'>
         <Routes>
           <Route path='/' element={<LandingScreen />} />
-          <Route path='/create-graph' element={<CreateGraphScreen />} />
+          <Route path='/graph' element={<GraphScreen />} />
           <Route path='/login' element={<LoginScreen />} />
           <Route path='/register' element={<RegisterScreen />} />
           <Route path='/account'

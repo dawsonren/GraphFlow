@@ -32,7 +32,7 @@ export const LoginScreen = () => {
       if (data.token) {
         await setToken(data.token)
         await dispatch(authenticateUser(data.user))
-        navigate('/create-graph')
+        navigate('/graph')
       }
 
     } catch (error) {
