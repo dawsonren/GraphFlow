@@ -32,7 +32,8 @@ var GraphSchema = new Schema({
   })],
   user_id: {
     type: String,
-    required: true},
+    required: true
+  },
   date: {
     type: Date,
     default: Date.now

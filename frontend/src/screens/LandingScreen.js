@@ -10,9 +10,10 @@ export const LandingScreen = () => {
   const navigate = useNavigate()
   const user = useSelector(data => data.user)
 
-  function goToCreate() {
+  async function goToCreate() {
     if (user.uuid) {
-      //createGraph('Untitled Graph', user)
+      const graph = await createGraph('Untitled Graph', user.uuid)
+      await navigate(`/graph/${graph._id}`)
     } else {
 
       navigate('/graph/public')

@@ -9,12 +9,9 @@ import { ActionSelector } from '../canvas/ActionSelector'
 import { Row, Column, Button, Link, TitleInput } from '../styled'
 import { useOutsideClick } from '../../utils/use-outside-click';
 
-export const GraphContainer = ({pub}) => {
+export const GraphContainer = ({pub, graphJson, setGraphJson, graphTitle, setGraphTitle}) => {
   const navigate = useNavigate()
 
-  const [graphData, setGraphData] = useState('Untitled')
-  const [graphJson, setGraphJson] = useState({nodes: [], edges: []})
-  const [graphTitle, setGraphTitle] = useState('')
   const [mode, setMode] = useState('add_node')
 
   const canvasWidth = 700
@@ -26,7 +23,7 @@ export const GraphContainer = ({pub}) => {
   return (
     <Wrapper>
       <Column style={{marginTop: 120}}>
-        <TitleInput />
+        <TitleInput value={graphTitle} onChange={(e) => setGraphTitle(e.target.value)} />
         <Row ref={modeRef}>
           <ModeSelector mode={mode} setMode={setMode} setGraphJson={setGraphJson} />
           <Canvas graphJson={graphJson} setGraphJson={setGraphJson} mode={mode} setMode={setMode}

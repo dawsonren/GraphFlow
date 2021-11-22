@@ -1,9 +1,11 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { RiFileCopy2Fill, RiUpload2Line, RiSaveLine } from 'react-icons/ri'
+import { RiFileCopy2Fill, RiUpload2Line, RiSaveLine, RiDeleteBin2Fill } from 'react-icons/ri'
+import { useParams } from 'react-router-dom'
 
 import { TooltipWrapper } from '../TooltipWrapper'
 import { Modal } from '../modals/Modal'
+import { deleteGraph, updateGraph } from '../../api/api-requests'
 
 
 const IconHolder = styled.div`
@@ -26,6 +28,7 @@ const IconHolder = styled.div`
 export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
   const [showLoad, setShowLoad] = useState(false)
   const [json, setJson] = useState('')
+  const { uuid } = useParams()
 
   function updateClipboard(newClip) {
     navigator.clipboard.writeText(newClip).then(
@@ -41,6 +44,14 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
     setJson('')
   }
 
+  function saveGraph() {
+
+  }
+
+  function deleteGraph() {
+
+  }
+
   return (
     <div style={{alignSelf: 'flex-start', marginLeft: 5}}>
       <TooltipWrapper text='Copy JSON'>
@@ -54,11 +65,18 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
         </IconHolder>
       </TooltipWrapper>
       {!pub &&
-        <TooltipWrapper text='Save'>
-          <IconHolder onClick={f=>f}>
-            <RiSaveLine size={20} />
-          </IconHolder>
-        </TooltipWrapper>
+        <Fragment>
+          <TooltipWrapper text='Save Graph'>
+            <IconHolder onClick={saveGraph}>
+              <RiSaveLine size={20} />
+            </IconHolder>
+          </TooltipWrapper>
+          <TooltipWrapper text='Delete Graph'>
+            <IconHolder onClick={deleteGraph}>
+              <RiDeleteBin2Fill size={20} />
+            </IconHolder>
+          </TooltipWrapper>
+        </Fragment>
       }
       {showLoad &&
         <Modal close={() => { setShowLoad(false); setJson('') }}>
