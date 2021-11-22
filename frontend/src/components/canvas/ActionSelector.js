@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { RiFileCopy2Fill, RiUpload2Line } from 'react-icons/ri'
+import { RiFileCopy2Fill, RiUpload2Line, RiSaveLine } from 'react-icons/ri'
 
 import { TooltipWrapper } from '../TooltipWrapper'
 import { Modal } from '../modals/Modal'
@@ -15,7 +15,7 @@ const IconHolder = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 5px;
+  margin-top: 5px;
 
   &:hover {
     background-color: var(--black-2);
@@ -23,7 +23,7 @@ const IconHolder = styled.div`
 `
 
 
-export const ActionSelector = ({graphJson, setGraphJson}) => {
+export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
   const [showLoad, setShowLoad] = useState(false)
   const [json, setJson] = useState('')
 
@@ -53,6 +53,13 @@ export const ActionSelector = ({graphJson, setGraphJson}) => {
           <RiUpload2Line size={20} />
         </IconHolder>
       </TooltipWrapper>
+      {!pub &&
+        <TooltipWrapper text='Save'>
+          <IconHolder onClick={f=>f}>
+            <RiSaveLine size={20} />
+          </IconHolder>
+        </TooltipWrapper>
+      }
       {showLoad &&
         <Modal close={() => { setShowLoad(false); setJson('') }}>
           <p>Paste your graph data here in JSON format:</p>

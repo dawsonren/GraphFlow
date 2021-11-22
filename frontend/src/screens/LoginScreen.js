@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RiArrowLeftSLine } from 'react-icons/ri'
 
 import { loginUser } from '../api/api-requests'
@@ -20,7 +20,7 @@ export const LoginScreen = () => {
   const dispatch = useDispatch()
 
   async function login(e) {
-    e.preventDefault()
+    await e.preventDefault()
 
     const user = {
       email: email,
@@ -32,12 +32,12 @@ export const LoginScreen = () => {
       if (data.token) {
         await setToken(data.token)
         await dispatch(authenticateUser(data.user))
-        navigate('/graph')
+        await navigate('/')
       }
 
     } catch (error) {
       if (error.response) {
-        setErrors(error.response.data)
+        await setErrors(error.response.data)
       }
     }
   }

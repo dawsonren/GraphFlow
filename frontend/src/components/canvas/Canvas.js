@@ -10,7 +10,7 @@ const CanvasBase = styled.div`
   height: ${props => props.height}px;
 `
 
-export const Canvas = ({graphJson, setGraphJson, mode, setMode}) => {
+export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, canvasHeight}) => {
   // Utility
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -28,8 +28,6 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode}) => {
   const [toNode, setToNode] = useState(null)
 
   // Constants
-  const canvasWidth = 700
-  const canvasHeight = 400
   const nodeRadius = 15
 
   // Offsets

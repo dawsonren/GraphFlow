@@ -30,8 +30,8 @@ export async function getGraph(id) {
   return data
 }
 
-export async function createGraph() {
-  const { data } = await axiosApi(createGraphAction())
+export async function createGraph(name, user) {
+  const { data } = await axiosApi(createGraphAction({name, user}))
 
   return data
 }

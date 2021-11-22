@@ -28,9 +28,10 @@ export function getGraphAction(id) {
   }
 }
 
-export function createGraphAction() {
+export function createGraphAction(data) {
   return {
     url: `/api/graph/create`,
+    data: data,
     method: 'post'
   }
 }

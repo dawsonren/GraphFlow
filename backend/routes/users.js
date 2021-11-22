@@ -26,6 +26,7 @@ router.get('/auth', (req, res) => {
         if (user) {
           return res.json({
             user: {
+              uuid: user._id,
               name: user.name,
               created_date: user.date
             }
@@ -112,7 +113,12 @@ router.post('/login', (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token: 'Bearer ' + token
+              token: 'Bearer ' + token,
+              user: {
+                uuid: user._id,
+                name: user.name,
+                created_date: user.date
+              }
             });
           }
         );

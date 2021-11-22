@@ -148,3 +148,16 @@ export const SmallInput = styled.input`
     border-color: var(--black-2);
   }
 `
+
+export const TitleInput = styled.input`
+  border: none;
+  border-radius: 10px;
+  width: 150px;
+  height: 24px;
+  box-sizing: border-box;
+  align-self: center;
+
+  &:hover {
+    border: 0.5px solid var(--black-2);
+  }
+`
