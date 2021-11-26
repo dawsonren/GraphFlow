@@ -1,0 +1,28 @@
+{
+  "name": "graphflow",
+  "version": "1.0.0",
+  "description": "A website to minimize max/min-flow algorithms.",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm backend",
+    "server": "nodemon backend/bin/www --ignore client",
+    "client": "npm start frontend --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheEasyLemon/GraphFlow.git"
+  },
+  "keywords": [
+    "graph",
+    "algorithms",
+    "max-flow",
+    "min-flow"
+  ],
+  "author": "Dawson Ren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheEasyLemon/GraphFlow/issues"
+  },
+  "homepage": "https://github.com/TheEasyLemon/GraphFlow#readme"
+}
