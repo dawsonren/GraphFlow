@@ -1,0 +1,29 @@
+{
+  "name": "graphflow",
+  "version": "1.0.0",
+  "description": "An website for visualizing network flows.",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm start --prefix frontend",
+    "server": "npm run-script serverstart --prefix backend",
+    "start": "concurrently \"npm run-script client\" \"npm run-script server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheEasyLemon/GraphFlow.git"
+  },
+  "keywords": [
+    "graphs",
+    "network",
+    "engineering"
+  ],
+  "author": "Dawson Ren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheEasyLemon/GraphFlow/issues"
+  },
+  "homepage": "https://github.com/TheEasyLemon/GraphFlow#readme",
+  "dependencies": {
+    "concurrently": "^6.4.0"
+  }
+}
