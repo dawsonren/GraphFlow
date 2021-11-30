@@ -15,13 +15,19 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
 
-  // Controlled by JSON
-  const [nodes, setNodes] = useState(graphJson.nodes)
-  const [edges, setEdges] = useState(graphJson.edges)
-
   // ids must monotonically increase, since some nodes/edges may be deleted
   const [nodeCounter, setNodeCounter] = useState(0)
   const [edgeCounter, setEdgeCounter] = useState(0)
+
+  // Next node/edge id should be larger than largest node/edge id
+  useEffect(() => {
+    if (graphJson.nodes.length > 0) {
+      setNodeCounter(parseInt(graphJson.nodes.at(-1).id.slice(1)) + 1)
+    }
+    if (graphJson.edges.length > 0) {
+      setEdgeCounter(parseInt(graphJson.edges.at(-1).id.slice(1)) + 1)
+    }
+  }, [graphJson])
 
   // For adding edges
   const [fromNode, setFromNode] = useState(null)
@@ -35,12 +41,6 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   useEffect(() => {
     setOffsets(document.getElementById('graph-canvas').getBoundingClientRect())
   }, [])
-
-  // Modify JSON to modify View
-  useEffect(() => {
-    setNodes(graphJson.nodes)
-    setEdges(graphJson.edges)
-  }, [graphJson])
 
   // Reset edge adding when not on add edge
   useEffect(() => {
@@ -70,7 +70,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
 
     // Check too close to other nodes
     // Inefficient, should use k-d trees if # of nodes grow large
-    for (const node of nodes) {
+    for (const node of graphJson.nodes) {
       if (Math.pow(node.display_data.top - top, 2) + Math.pow(node.display_data.left - left, 2) < Math.pow(nodeRadius * 2, 2)) {
         return false
       }
@@ -96,7 +96,6 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
       type: '',
       supply: 0
     }
-    setNodeCounter(nodeCounter + 1)
     newNodeOnGraph(newNode)
 
     setFromNode(null)
@@ -110,7 +109,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
 
     const newNodes = oldNodes.filter((n) => n.id !== node.id)
     const newEdges = oldEdges.filter((e) => !related_edge_ids.includes(e.id))
-    setGraphJson({nodes: newNodes, edges: newEdges})
+    setGraphJson({...graphJson, nodes: newNodes, edges: newEdges})
   }
 
   function setNodeValueOnGraph(field) {
@@ -158,7 +157,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
 
       return e
     })
-    setGraphJson({ edges: newEdges, nodes: newNodes })
+    setGraphJson({ ...graphJson, edges: newEdges, nodes: newNodes })
   }
 
   ///
@@ -252,8 +251,6 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
       max_flow: null,
       id: `e${edgeCounter}`
     }
-
-    setEdgeCounter(edgeCounter + 1)
     newEdgeOnGraph(newEdge)
 
     setFromNode(null)
@@ -262,8 +259,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
 
   function deleteEdge(edge) {
     const oldEdges = [...graphJson.edges]
-    const newJson = {...graphJson, edges: oldEdges.filter((e) => e.id !== edge.id)}
-    setGraphJson(newJson)
+    setGraphJson({...graphJson, edges: oldEdges.filter((e) => e.id !== edge.id)})
   }
 
   function canvasHandleClick(e) {
@@ -275,7 +271,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   return (
     <CanvasBase id='graph-canvas' onClick={(e) => canvasHandleClick(e)}
       width={canvasWidth} height={canvasHeight} ref={canvasRef}>
-      {nodes.map((node, i) => {
+      {graphJson.nodes.map((node, i) => {
         return (
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
@@ -283,7 +279,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
             setPos={setNodePosOnGraph} canvasRef={canvasRef} setSupply={setNodeSupplyOnGraph} />
         )
       })}
-      {edges.map((edge, i) => {
+      {graphJson.edges.map((edge, i) => {
         return (
           <Edge key={i} edge={edge} nodeRadius={nodeRadius} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}

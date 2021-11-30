@@ -10,9 +10,6 @@ var graph_controller = require('../controllers/graphController');
 // GET request for a particular Graph.
 router.get('/:id', graph_controller.graph);
 
-// GET request for all Graphs.
-router.get('/all', graph_controller.graph_list);
-
 // POST request for creating a Graph.
 router.post('/create', graph_controller.graph_create_post);
 

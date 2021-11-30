@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RiFileCopy2Fill, RiUpload2Line, RiSaveLine, RiDeleteBin2Fill } from 'react-icons/ri'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { TooltipWrapper } from '../TooltipWrapper'
 import { Modal } from '../modals/Modal'
@@ -29,6 +29,7 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
   const [showLoad, setShowLoad] = useState(false)
   const [json, setJson] = useState('')
   const { uuid } = useParams()
+  const navigate = useNavigate()
 
   function updateClipboard(newClip) {
     navigator.clipboard.writeText(newClip).then(
@@ -44,12 +45,15 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
     setJson('')
   }
 
-  function saveGraph() {
-
+  async function saveGraph() {
+    await updateGraph(uuid, graphJson)
+    // hard refresh
+    await navigate(`/graph/${uuid}`)
   }
 
-  function deleteGraph() {
-
+  async function deletePage() {
+    await deleteGraph(uuid)
+    await navigate('/account')
   }
 
   return (
@@ -72,7 +76,7 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
             </IconHolder>
           </TooltipWrapper>
           <TooltipWrapper text='Delete Graph'>
-            <IconHolder onClick={deleteGraph}>
+            <IconHolder onClick={deletePage}>
               <RiDeleteBin2Fill size={20} />
             </IconHolder>
           </TooltipWrapper>

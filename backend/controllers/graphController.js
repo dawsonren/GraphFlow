@@ -1,8 +1,13 @@
 var Graph = require('../models/graph');
-const User = require('../models/User');
+var User = require('../models/user');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 // Display a particular Graph.
 exports.graph = function(req, res) {
+  if (!ObjectId.isValid(req.params.id)) {
+    return res.status(500).json({ message: 'Graph not found.' })
+  }
+
   Graph.findById(req.params.id).then(graph => {
     if (graph) {
       res.json(graph)
@@ -10,11 +15,6 @@ exports.graph = function(req, res) {
       return res.status(500).json({ message: 'Graph not found.' })
     }
   })
-}
-
-// Display the list of all Graphs
-exports.graph_list = function(req, res) {
-  res.send('NOT IMPLEMENTED: Graph list')
 }
 
 // Handle Graph create on POST
@@ -39,14 +39,14 @@ exports.graph_create_post = function(req, res) {
 
 // Handle Graph delete on POST
 exports.graph_delete_post = function(req, res) {
-  Graph.findById(req.params.id).remove(obj => {
-    if (obj.ok !== 1) {
-      return res.status(500).json({ message: 'Unable to delete graph.' })
-    }
+  Graph.findByIdAndDelete(req.params.id, graph => {
+    return res.status(200).json({ success: true })
   })
 }
 
-// Handle Graph delete on POST
+// Handle Graph update on POST
 exports.graph_update_post = function(req, res) {
-  res.send('NOT IMPLEMENTED: Graph update POST')
+  Graph.findByIdAndUpdate(req.params.id, req.body, graph => {
+    return res.status(200).json({ success: true })
+  })
 }

@@ -21,6 +21,13 @@ export function loginUserAction(user) {
   }
 }
 
+export function getUserGraphsAction(user) {
+  return {
+    url: `/api/users/${user}/graphs`,
+    method: 'get'
+  }
+}
+
 export function getGraphAction(id) {
   return {
     url: `/api/graph/${id}`,

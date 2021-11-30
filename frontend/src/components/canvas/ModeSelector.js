@@ -41,7 +41,7 @@ const ModeRow = ({id, icon, selected, onClickCard, modeName}) => {
   )
 }
 
-export const ModeSelector = ({mode, setMode, setGraphJson}) => {
+export const ModeSelector = ({mode, setMode, graphJson, setGraphJson}) => {
   const modes = ['add_node', 'add_edge', 'move', 'select', 'delete']
   const modeNames = ['Add Node', 'Add Edge', 'Move', 'Select', 'Delete']
   const icons = [<RiAddCircleLine size={30} />,
@@ -59,7 +59,7 @@ export const ModeSelector = ({mode, setMode, setGraphJson}) => {
         )
       })}
       <ModeRow key={modes.length} icon={<RiForbid2Line size={30} />} selected={mode === modes.length}
-        onClickCard={() => setGraphJson({nodes: [], edges: []})} modeName={'Clear'} />
+        onClickCard={() => setGraphJson({name: graphJson.name, nodes: [], edges: []})} modeName={'Clear'} />
     </LeftContainer>
   )
 

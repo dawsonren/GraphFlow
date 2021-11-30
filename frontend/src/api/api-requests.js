@@ -1,6 +1,6 @@
 import {
   tokenAction,
-  registerUserAction, loginUserAction,
+  registerUserAction, loginUserAction, getUserGraphsAction,
   getGraphAction, createGraphAction, deleteGraphAction, updateGraphAction
 } from './api-actions'
 
@@ -22,6 +22,12 @@ export async function loginUser(user) {
   const { data, errors } = await axiosApi(loginUserAction(user))
 
   return { data, errors }
+}
+
+export async function getUserGraphs(user) {
+  const { data } = await axiosApi(getUserGraphsAction(user))
+
+  return data
 }
 
 export async function getGraph(id) {
