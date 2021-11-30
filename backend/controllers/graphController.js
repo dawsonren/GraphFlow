@@ -25,6 +25,7 @@ exports.graph_list = function(req, res) {
 // Handle Graph create on POST
 exports.graph_create_post = function(req, res) {
   const id = mongoose.Types.ObjectId(req.body.user)
+  console.log(id)
   User.findById(id).then(user => {
     if (user) {
       const newGraph = new Graph({
