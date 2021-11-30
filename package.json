@@ -4,8 +4,9 @@
   "description": "A website to minimize max/min-flow algorithms.",
   "main": "index.js",
   "scripts": {
-    "server": "npm run-script dev --prefix backend",
-    "client": "npm start --prefix frontend",
+    "start": "npm backend",
+    "server": "nodemon backend/bin/www --ignore client",
+    "client": "npm start frontend --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {

@@ -12,7 +12,6 @@ export const LandingScreen = () => {
 
   async function goToCreate() {
     if (user.uuid) {
-      console.log(user.uuid)
       const graph = await createGraph('Untitled Graph', user.uuid)
       await navigate(`/graph/${graph._id}`)
     } else {
