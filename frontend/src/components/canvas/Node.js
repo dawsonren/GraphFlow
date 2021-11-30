@@ -38,7 +38,7 @@ const Circle = styled.div`
 
 const RadioButton = ({trigger, input, updateType}) => {
   return (
-    <Row onClick={(e) => updateType(e, trigger)} style={{marginLeft: 5}}>
+    <Row onClick={() => updateType(trigger)} style={{marginLeft: 5}}>
       {trigger === input ?
         <RiCheckboxBlankCircleFill /> :
         <RiCheckboxBlankCircleLine />
@@ -67,8 +67,7 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
     setName(node, value)
   }
 
-  function updateType(e, type) {
-    e.stopPropagation()
+  function updateType(type) {
     setType(node, type)
   }
 

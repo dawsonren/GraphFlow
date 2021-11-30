@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { RiFileCopy2Fill, RiUpload2Line, RiSaveLine, RiDeleteBin2Fill } from 'react-icons/ri'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { TooltipWrapper } from '../TooltipWrapper'
 import { Modal } from '../modals/Modal'
@@ -25,12 +25,10 @@ const IconHolder = styled.div`
 `
 
 
-export const ActionSelector = ({graphJson, setGraphJson, pub, graphTitle}) => {
+export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
   const [showLoad, setShowLoad] = useState(false)
   const [json, setJson] = useState('')
   const { uuid } = useParams()
-
-  const navigate = useNavigate()
 
   function updateClipboard(newClip) {
     navigator.clipboard.writeText(newClip).then(
@@ -46,19 +44,12 @@ export const ActionSelector = ({graphJson, setGraphJson, pub, graphTitle}) => {
     setJson('')
   }
 
-  async function saveGraph() {
-    const savedGraph = {
-      name: graphTitle,
-      user_id: uuid,
-      ...graphJson
-    }
-    const res = await updateGraph(uuid, savedGraph)
-    await setGraphJson(res)
+  function saveGraph() {
+
   }
 
-  async function deleteTheGraph() {
-    await deleteGraph(uuid)
-    await navigate('/account')
+  function deleteGraph() {
+
   }
 
   return (
@@ -81,7 +72,7 @@ export const ActionSelector = ({graphJson, setGraphJson, pub, graphTitle}) => {
             </IconHolder>
           </TooltipWrapper>
           <TooltipWrapper text='Delete Graph'>
-            <IconHolder onClick={deleteTheGraph}>
+            <IconHolder onClick={deleteGraph}>
               <RiDeleteBin2Fill size={20} />
             </IconHolder>
           </TooltipWrapper>

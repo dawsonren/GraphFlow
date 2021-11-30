@@ -28,7 +28,7 @@ export const GraphContainer = ({pub, graphJson, setGraphJson, graphTitle, setGra
           <ModeSelector mode={mode} setMode={setMode} setGraphJson={setGraphJson} />
           <Canvas graphJson={graphJson} setGraphJson={setGraphJson} mode={mode} setMode={setMode}
             canvasWidth={canvasWidth} canvasHeight={canvasHeight} />
-          <ActionSelector graphJson={graphJson} setGraphJson={setGraphJson} pub={pub} graphTitle={graphTitle} />
+          <ActionSelector graphJson={graphJson} setGraphJson={setGraphJson} pub={pub} />
         </Row>
         {pub &&
           <p>Want to save your graph? <Link onClick={() => navigate('/register')}>Register</Link></p>
