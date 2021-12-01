@@ -23,7 +23,7 @@ const Header = styled.div`
 `
 
 const Content = styled.div`
-  margin: 60px 20px;
+  margin: 60px ${props => props.sideMargin}px;
 `
 
 const Logo = styled.img`
@@ -48,7 +48,7 @@ const AccountButton = styled(LoginButton)`
 `
 
 
-export const Wrapper = ({children, showIn=false}) => {
+export const Wrapper = ({children, showIn=false, sideMargin=true}) => {
   const navigate = useNavigate()
   const user = useSelector(data => data.user)
 
@@ -65,7 +65,7 @@ export const Wrapper = ({children, showIn=false}) => {
           </Fragment>
         }
       </Header>
-      <Content>
+      <Content sideMargin={sideMargin ? 20 : 0}>
         {children}
       </Content>
     </Container>
