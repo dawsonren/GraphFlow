@@ -8,7 +8,7 @@ import { Table } from '../components/tables/Table'
 import { Row, FlexGrow, Link } from '../components/styled'
 import { removeToken } from '../api/http'
 import { resetUser } from '../redux/reducers/user'
-import { getUserGraphs } from '../api/api-requests'
+import { getUserGraphs, createGraph } from '../api/api-requests'
 
 export const AccountScreen = () => {
   const navigate = useNavigate()
@@ -70,7 +70,8 @@ export const AccountScreen = () => {
   }
 
   async function newGraph() {
-
+    const graph = await createGraph('Untitled Graph', user.uuid)
+    await navigate(`/graph/${graph._id}`)
   }
 
   return (

@@ -6,7 +6,8 @@
   "scripts": {
     "client": "npm start --prefix frontend",
     "server": "npm run-script serverstart --prefix backend",
-    "start": "concurrently \"npm run-script client\" \"npm run-script server\""
+    "start": "concurrently \"npm run-script client\" \"npm run-script server\"",
+    "heroku-postbuild": "cd frontend && npm install && cd ../backend && npm install"
   },
   "repository": {
     "type": "git",
