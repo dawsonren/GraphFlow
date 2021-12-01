@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const keys = require('../config/keys');
 
 // Load input validation
 const validateRegisterInput = require('../validation/register');
@@ -9,12 +8,13 @@ const validateLoginInput = require('../validation/login');
 // Load models
 const User = require('../models/user');
 const Graph = require('../models/graph');
+const SECRET_OR_KEY = process.env.SECRET_OR_KEY;
 
 exports.auth = function(req, res) {
   // "Token Bearer ..."
   const token = req.headers.authorization.slice(13)
 
-  jwt.verify(token, keys.secretOrKey, function(err, decoded) {
+  jwt.verify(token, SECRET_OR_KEY, function(err, decoded) {
     if (err) {
       return res.status(401).json({ message: 'Invalid Credentials.' })
     } else {
@@ -96,7 +96,7 @@ exports.login = function(req, res) {
         // Sign token
         jwt.sign(
           payload,
-          keys.secretOrKey,
+          SECRET_OR_KEY,
           {
             expiresIn: 2592000 // 1 month in seconds
           },

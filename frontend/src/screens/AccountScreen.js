@@ -69,6 +69,10 @@ export const AccountScreen = () => {
     await navigate('/')
   }
 
+  async function newGraph() {
+
+  }
+
   return (
     <Wrapper showIn={true}>
       <Row>
@@ -76,6 +80,7 @@ export const AccountScreen = () => {
         <FlexGrow />
         <button onClick={logout}>Logout</button>
       </Row>
+      <button onClick={newGraph}>Create New Graph</button>
       <Table columns={graphColumns} data={graphData} />
     </Wrapper>
   )

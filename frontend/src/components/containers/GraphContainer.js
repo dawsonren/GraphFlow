@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom'
+import { RiArrowLeftSLine } from 'react-icons/ri'
 
 import { Wrapper } from './Wrapper'
 import { Canvas } from '../canvas/Canvas'
@@ -26,6 +27,11 @@ export const GraphContainer = ({pub, graphJson, setGraphJson}) => {
 
   return (
     <Wrapper>
+      <Row style={{ paddingTop: '20px' }}>
+        <Link onClick={() => navigate(`/${pub ? '' : 'account'}`)} style={{display: 'flex', alignItems: 'center'}}>
+          <RiArrowLeftSLine style={{marginRight: '5px'}} />Back to {pub ? 'home' : 'account'}
+        </Link>
+      </Row>
       <Column style={{marginTop: 120}}>
         {!pub &&
           <TitleInput value={graphJson.name} onChange={(e) => updateTitle(e.target.value)} />

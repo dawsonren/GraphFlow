@@ -6,13 +6,16 @@ const logger = require('morgan');
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const passport = require("passport");
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const users = require("./routes/users");
 const graphRouter = require('./routes/graph');
 
 // Connect to MongoDB
 const mongoose = require('mongoose');
-const mongoDB = require('./config/keys').mongoURI
+const mongoDB = process.env.MONGO_URI;
 mongoose
   .connect(mongoDB, {useNewUrlParser: true , useUnifiedTopology: true})
   .then(() => console.log('MongoDB successfully connected'))
