@@ -67,6 +67,11 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 });
 
+// catchall route handler
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
+
 // Get port from environment and store in Express.
 var port = normalizePort(process.env.PORT || '9000');
 app.set('port', port);
