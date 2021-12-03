@@ -2,7 +2,8 @@
   "name": "graphflow",
   "version": "1.0.0",
   "description": "An website for visualizing network flows.",
-  "main": "index.js",
+  "main": "server.js",
+  "proxy": "http://localhost:3000",
   "scripts": {
     "server": "node server.js",
     "start": "concurrently --kill-others-on-fail \"node server.js\" \"npm start --prefix frontend\"",

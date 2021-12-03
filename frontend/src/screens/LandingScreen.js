@@ -45,7 +45,7 @@ export const LandingScreen = () => {
       <Section height={650}>
         <div style={{margin: '0px 50px'}}>
           <h1>Minimum Cost Network Flows<br/><u>visualized</u>.</h1>
-          <p>Are you a student, educator, or academic? Considering using GraphFlow to help visualize and intuitively understand network flows. Design, manage, and explore the networks you create or import.</p>
+          <p>Are you a student, educator, or academic? Consider using GraphFlow to help visualize and intuitively understand network flows. Design, manage, and explore the networks you create or import.</p>
           <ConvertButton onClick={goToCreate}>Create Your Network</ConvertButton>
         </div>
         <img style={{width: '50%', height: 'auto'}} src={graphExample} alt='Example of a network created with GraphFlow' />
