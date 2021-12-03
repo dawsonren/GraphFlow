@@ -5,8 +5,7 @@
   "main": "server.js",
   "proxy": "http://localhost:3000",
   "scripts": {
-    "start": "node server.js",
-    "dev": "concurrently --kill-others-on-fail \"node server.js\" \"npm start --prefix frontend\"",
+    "start": "concurrently --kill-others-on-fail \"node server.js\" \"npm start --prefix frontend\"",
     "heroku-postbuild": "cd frontend && npm install --only=dev && npm install && npm run build"
   },
   "repository": {
