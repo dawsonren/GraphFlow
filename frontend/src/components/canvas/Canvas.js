@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Node } from './Node'
 import { Edge } from './Edge'
+import { PreviewEdge } from './PreviewEdge'
 
 const CanvasBase = styled.div`
   border: 2px solid var(--primary);
@@ -28,6 +29,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [showPreviewNode, setShowPreviewNode] = useState(false)
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
 
   // ids must monotonically increase, since some nodes/edges may be deleted
   const [nodeCounter, setNodeCounter] = useState(0)
@@ -66,7 +68,8 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
 
   // Help drag/drop nodes
   const canvasRef = useRef(null)
-  const cursor = document.getElementById('cursor')
+  const cursor = document.getElementById('preview-node')
+  const preview_edge = document.getElementById('preview-edge')
   const canvas = document.getElementById('graph-canvas')
 
   ///
@@ -289,20 +292,25 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   ///
 
   function handleCursorMove(e, cursor) {
-    cursor.style.left = e.clientX - nodeRadius + 'px'
-    cursor.style.top = e.clientY - nodeRadius + 'px'
+    console.log("move")
+    if (mode === 'add_node') {
+      cursor.style.left = e.clientX - nodeRadius + 'px'
+      cursor.style.top = e.clientY - nodeRadius + 'px'
+    } else if (mode === 'add_edge') {
+      setCursorPos({ x: e.clientX, y: e.clientY })
+    }
   }
 
   function canvasOnMouseEnter() {
+    canvas.addEventListener('mousemove', e => handleCursorMove(e, cursor))
     if (mode === 'add_node') {
-      canvas.addEventListener('mousemove', e => handleCursorMove(e, cursor))
       setShowPreviewNode(true)
     }
   }
 
   function canvasOnMouseLeave() {
+    canvas.removeEventListener('mousemove', e => handleCursorMove(e, cursor))
     if (mode === 'add_node') {
-      canvas.removeEventListener('mousemove', e => handleCursorMove(e, cursor))
       setShowPreviewNode(false)
     }
   }
@@ -327,7 +335,10 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
             mode={mode} deleteEdge={deleteEdge} setCurve={setEdgeCurveOnGraph} />
         )
       })}
-      <Cursor id='cursor' nodeRadius={nodeRadius} hide={!showPreviewNode} />
+      <Cursor id='preview-node' nodeRadius={nodeRadius} hide={!showPreviewNode} />
+      {fromNode &&
+        <PreviewEdge id='preview-edge' nodeRadius={nodeRadius} fromNode={fromNode} toX={cursorPos.x} toY={cursorPos.y} />
+      }
     </CanvasBase>
   )
 }
