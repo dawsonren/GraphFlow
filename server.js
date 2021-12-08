@@ -53,12 +53,14 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 });
 
-// Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, 'frontend/build')))
-// Anything that doesn't match the above, send back index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/build/index.html'))
-})
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React frontend app
+  app.use(express.static(path.join(__dirname, 'frontend/build')))
+  // Anything that doesn't match the above, send back index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/build/index.html'))
+  })
+}
 
 // Get port from environment.
 var PORT = process.env.PORT || '9000'

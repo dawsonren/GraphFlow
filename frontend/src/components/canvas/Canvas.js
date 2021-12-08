@@ -10,10 +10,24 @@ const CanvasBase = styled.div`
   height: ${props => props.height}px;
 `
 
+const Cursor = styled.div`
+  ${props => props.hide && 'display: none;'}
+  position: fixed;
+  pointer-events: none;
+  background-color: var(--primary);
+  height: ${props => props.nodeRadius * 2}px;
+  width: ${props => props.nodeRadius * 2}px;
+  border-radius: ${props => props.nodeRadius}px;
+  box-sizing: border-box;
+  z-index: 3;
+  border: 2px solid var(--black);
+`
+
 export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, canvasHeight}) => {
   // Utility
   const [highlight, setHighlight] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
+  const [showPreviewNode, setShowPreviewNode] = useState(false)
 
   // ids must monotonically increase, since some nodes/edges may be deleted
   const [nodeCounter, setNodeCounter] = useState(0)
@@ -52,6 +66,8 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
 
   // Help drag/drop nodes
   const canvasRef = useRef(null)
+  const cursor = document.getElementById('cursor')
+  const canvas = document.getElementById('graph-canvas')
 
   ///
   /// ADD NODE FUNCTIONS
@@ -268,9 +284,33 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
     }
   }
 
+  ///
+  /// Extras
+  ///
+
+  function handleCursorMove(e, cursor) {
+    cursor.style.left = e.clientX - nodeRadius + 'px'
+    cursor.style.top = e.clientY - nodeRadius + 'px'
+  }
+
+  function canvasOnMouseEnter() {
+    if (mode === 'add_node') {
+      canvas.addEventListener('mousemove', e => handleCursorMove(e, cursor))
+      setShowPreviewNode(true)
+    }
+  }
+
+  function canvasOnMouseLeave() {
+    if (mode === 'add_node') {
+      canvas.removeEventListener('mousemove', e => handleCursorMove(e, cursor))
+      setShowPreviewNode(false)
+    }
+  }
+
   return (
     <CanvasBase id='graph-canvas' onClick={(e) => canvasHandleClick(e)}
-      width={canvasWidth} height={canvasHeight} ref={canvasRef}>
+      width={canvasWidth} height={canvasHeight} ref={canvasRef}
+      onMouseEnter={canvasOnMouseEnter} onMouseLeave={canvasOnMouseLeave}>
       {graphJson.nodes.map((node, i) => {
         return (
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight} offsets={offsets}
@@ -287,6 +327,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
             mode={mode} deleteEdge={deleteEdge} setCurve={setEdgeCurveOnGraph} />
         )
       })}
+      <Cursor id='cursor' nodeRadius={nodeRadius} hide={!showPreviewNode} />
     </CanvasBase>
   )
 }
