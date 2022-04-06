@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { Wrapper } from '../components/containers/Wrapper'
 import { Table } from '../components/tables/Table'
-import { Row, FlexGrow, Link } from '../components/styled'
+import { Row, FlexGrow, Link, Button } from '../components/styled'
 import { removeToken } from '../api/http'
 import { resetUser } from '../redux/reducers/user'
 import { getUserGraphs, createGraph } from '../api/api-requests'
@@ -48,6 +48,9 @@ export const AccountScreen = () => {
   ])
 
   const graphData = userGraphs ? userGraphs.map((graph) => {
+    const date = new Date(graph.date)
+    const formatted_date = date.toLocaleString()
+
     return {
       name: (
         <div style={{width: '50vw', float: 'left'}}>
@@ -56,7 +59,7 @@ export const AccountScreen = () => {
       ),
       date: (
         <div style={{width: '30vw', float: 'left'}}>
-          {graph.date}
+          {formatted_date}
         </div>
       )
     }
@@ -79,9 +82,9 @@ export const AccountScreen = () => {
       <Row>
         <h1>{`Welcome Back, ${user.name}`}</h1>
         <FlexGrow />
-        <button onClick={logout}>Logout</button>
+        <Button onClick={logout}>Logout</Button>
       </Row>
-      <button onClick={newGraph}>Create New Graph</button>
+      <Button onClick={newGraph}>Create New Graph</Button>
       <Table columns={graphColumns} data={graphData} />
     </Wrapper>
   )

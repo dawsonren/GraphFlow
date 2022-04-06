@@ -34,13 +34,6 @@ const RedSpan = styled.span`
   color: var(--red);
 `
 
-function cosd(x) {
-  return Math.cos(x * Math.PI / 180)
-}
-
-function sind(x) {
-  return Math.sin(x * Math.PI / 180)
-}
 
 export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setCost, setMinFlow, setMaxFlow, mode, deleteEdge, setCurve}) => {
   const fromX = edge.display_data.fromX

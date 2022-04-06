@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 
@@ -13,10 +13,15 @@ const PrivateRoute = ({children}) => {
   const data = useSelector(user => user.user)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (!data.isAuthenticated) {
+      navigate('/')
+    }
+  }, [])
+
   if (data.isAuthenticated) {
     return children
   } else {
-    navigate('/')
     return null
   }
 }
@@ -28,7 +33,11 @@ export const MainRouter = (props) => {
         <Routes>
           <Route path='/' element={<LandingScreen />} />
           <Route path='/graph/public' element={<PublicGraphScreen />} />
-          <Route path='/graph/:uuid' element={<GraphScreen />} />
+          <Route path='/graph/:uuid' element={
+            <PrivateRoute>
+              <GraphScreen />
+            </PrivateRoute>
+          } />
           <Route path='/login' element={<LoginScreen />} />
           <Route path='/register' element={<RegisterScreen />} />
           <Route path='/account'

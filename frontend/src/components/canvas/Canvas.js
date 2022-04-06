@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import useScrollPosition from '@react-hook/window-scroll'
 
 import { Node } from './Node'
 import { Edge } from './Edge'
@@ -30,6 +31,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   const [showMenu, setShowMenu] = useState(false)
   const [showPreviewNode, setShowPreviewNode] = useState(false)
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
+  const scrollY = useScrollPosition(60) // fps
 
   // ids must monotonically increase, since some nodes/edges may be deleted
   const [nodeCounter, setNodeCounter] = useState(0)
@@ -38,10 +40,10 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   // Next node/edge id should be larger than largest node/edge id
   useEffect(() => {
     if (graphJson.nodes.length > 0) {
-      setNodeCounter(parseInt(graphJson.nodes.at(-1).id.slice(1)) + 1)
+      setNodeCounter(parseInt(graphJson.nodes.slice(-1)[0].id.slice(1)) + 1)
     }
     if (graphJson.edges.length > 0) {
-      setEdgeCounter(parseInt(graphJson.edges.at(-1).id.slice(1)) + 1)
+      setEdgeCounter(parseInt(graphJson.edges.slice(-1)[0].id.slice(1)) + 1)
     }
   }, [graphJson])
 
@@ -56,7 +58,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   const [offsets, setOffsets] = useState(null)
   useEffect(() => {
     setOffsets(document.getElementById('graph-canvas').getBoundingClientRect())
-  }, [])
+  }, [graphJson])
 
   // Reset edge adding when not on add edge
   useEffect(() => {
@@ -292,12 +294,11 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
   ///
 
   function handleCursorMove(e, cursor) {
-    console.log("move")
     if (mode === 'add_node') {
       cursor.style.left = e.clientX - nodeRadius + 'px'
       cursor.style.top = e.clientY - nodeRadius + 'px'
     } else if (mode === 'add_edge') {
-      setCursorPos({ x: e.clientX, y: e.clientY })
+      setCursorPos({ x: e.clientX - offsets.left, y: e.clientY - offsets.top + scrollY})
     }
   }
 
@@ -337,7 +338,8 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
       })}
       <Cursor id='preview-node' nodeRadius={nodeRadius} hide={!showPreviewNode} />
       {fromNode &&
-        <PreviewEdge id='preview-edge' nodeRadius={nodeRadius} fromNode={fromNode} toX={cursorPos.x} toY={cursorPos.y} />
+        <PreviewEdge id='preview-edge' nodeRadius={nodeRadius} fromNode={fromNode} toX={cursorPos.x} toY={cursorPos.y}
+          offsets={offsets}/>
       }
     </CanvasBase>
   )
