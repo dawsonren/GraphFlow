@@ -23,6 +23,10 @@ const Cursor = styled.div`
   box-sizing: border-box;
   z-index: 3;
   border: 2px solid var(--black);
+
+  ${props => props.grab && `
+    cursor: grab;
+  `}
 `
 
 export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, canvasHeight}) => {
@@ -302,30 +306,29 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
     }
   }
 
-  function canvasOnMouseEnter() {
+  function canvasMouseEnter() {
     canvas.addEventListener('mousemove', e => handleCursorMove(e, cursor))
     if (mode === 'add_node') {
       setShowPreviewNode(true)
     }
   }
 
-  function canvasOnMouseLeave() {
+  function canvasMouseLeave() {
     canvas.removeEventListener('mousemove', e => handleCursorMove(e, cursor))
-    if (mode === 'add_node') {
-      setShowPreviewNode(false)
-    }
+    setShowPreviewNode(false)
   }
 
   return (
     <CanvasBase id='graph-canvas' onClick={(e) => canvasHandleClick(e)}
       width={canvasWidth} height={canvasHeight} ref={canvasRef}
-      onMouseEnter={canvasOnMouseEnter} onMouseLeave={canvasOnMouseLeave}>
+      onMouseEnter={canvasMouseEnter} onMouseLeave={canvasMouseLeave}>
       {graphJson.nodes.map((node, i) => {
         return (
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
             mode={mode} handleNodeClick={handleNodeClick} setName={setNodeNameOnGraph} setType={setNodeTypeOnGraph}
-            setPos={setNodePosOnGraph} canvasRef={canvasRef} setSupply={setNodeSupplyOnGraph} />
+            setPos={setNodePosOnGraph} canvasRef={canvasRef} setSupply={setNodeSupplyOnGraph}
+            addPreviewNode={() => setShowPreviewNode(true)} removePreviewNode={() => setShowPreviewNode(false)} />
         )
       })}
       {graphJson.edges.map((edge, i) => {
@@ -336,7 +339,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
             mode={mode} deleteEdge={deleteEdge} setCurve={setEdgeCurveOnGraph} />
         )
       })}
-      <Cursor id='preview-node' nodeRadius={nodeRadius} hide={!showPreviewNode} />
+      <Cursor id='preview-node' nodeRadius={nodeRadius} hide={!showPreviewNode} grab={mode === 'move'} />
       {fromNode &&
         <PreviewEdge id='preview-edge' nodeRadius={nodeRadius} fromNode={fromNode} toX={cursorPos.x} toY={cursorPos.y}
           offsets={offsets}/>
