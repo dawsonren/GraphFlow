@@ -34,10 +34,6 @@ const Circle = styled.div`
   ${props => props.grab && `
     cursor: grab;
   `}
-
-  ${props => !props.visible && `
-    display: none;
-  `}
 `
 
 const RadioButton = ({trigger, input, updateType}) => {
@@ -53,10 +49,7 @@ const RadioButton = ({trigger, input, updateType}) => {
 
 }
 
-export const Node = ({id, node, mode, offsets, highlight, setHighlight,
-  showMenu, setShowMenu, handleNodeClick, setName, setType, setPos,
-  canvasRef, setSupply, addPreviewNode, removePreviewNode}) => {
-
+export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType, setPos, canvasRef, setSupply}) => {
   const nodeRef = useRef(null)
 
   useOutsideClick(nodeRef, () => showMenu === id && setShowMenu(false))
@@ -64,21 +57,9 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight,
   const [showName, setShowName] = useState(node.name)
   const [showType, setShowType] = useState(node.type)
   const [showSupply, setShowSupply] = useState(node.supply)
-  const [visible, setVisible] = useState(true)
 
   // Dragging Functionality
-  useDrag(nodeRef, canvasRef, { onPointerUp: pointerUp, onPointerDown: pointerDown })
-
-  function pointerUp(e) {
-    updatePos(e)
-    removePreviewNode()
-    setVisible(true)
-  }
-
-  function pointerDown(e) {
-    addPreviewNode()
-    setVisible(false)
-  }
+  useDrag(nodeRef, canvasRef, { onPointerUp: updatePos })
 
   function updateName(e) {
     const value = e.target.value
@@ -126,7 +107,7 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight,
       <Circle radius={node.display_data.radius} top={node.display_data.top + offsets.top} left={node.display_data.left + offsets.left}
         highlight={highlight === id} onMouseEnter={() => setHighlight(id)}
         onMouseLeave={() => setHighlight(false)}
-        grab={mode === 'move'} visible={visible}>
+        grab={mode === 'move'}>
         <p>{node.name.slice(0, 3)}</p>
       </Circle>
       {showMenu === id &&
