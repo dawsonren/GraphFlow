@@ -49,14 +49,14 @@ const RadioButton = ({trigger, input, updateType}) => {
 
 }
 
-export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType, setPos, canvasRef, setSupply}) => {
+export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType, setPos, canvasRef, setDemand}) => {
   const nodeRef = useRef(null)
 
   useOutsideClick(nodeRef, () => showMenu === id && setShowMenu(false))
 
   const [showName, setShowName] = useState(node.name)
   const [showType, setShowType] = useState(node.type)
-  const [showSupply, setShowSupply] = useState(node.supply)
+  const [showDemand, setShowDemand] = useState(node.demand)
 
   // Dragging Functionality
   useDrag(nodeRef, canvasRef, { onPointerUp: updatePos })
@@ -82,13 +82,13 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
     }
   }
 
-  function updateSupply(e) {
-    setShowSupply(e.target.value)
+  function updateDemand(e) {
+    setShowDemand(e.target.value)
 
     // only update if value is valid
     const value = parseInt(e.target.value)
     if (Number.isInteger(value)) {
-      setSupply(node, value)
+      setDemand(node, value)
     }
   }
 
@@ -121,7 +121,7 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
             <RadioButton trigger='t' input={node.type} updateType={updateType} />
             <RadioButton trigger='' input={node.type} updateType={updateType} />
           </DropdownMenuRow>
-          <DropdownMenuRow style={{width: 175}}>Supply (b) <FlexGrow /><SmallInput value={showSupply} onChange={updateSupply} /></DropdownMenuRow>
+          <DropdownMenuRow style={{width: 175}}>Demand (b) <FlexGrow /><SmallInput value={showDemand} onChange={updateDemand} /></DropdownMenuRow>
         </DropdownMenu>
       }
     </div>

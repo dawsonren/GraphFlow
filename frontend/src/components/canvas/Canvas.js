@@ -115,7 +115,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
       id: `n${nodeCounter}`,
       name: '',
       type: '',
-      supply: 0
+      demand: 0
     }
     newNodeOnGraph(newNode)
 
@@ -149,7 +149,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
 
   const setNodeNameOnGraph = setNodeValueOnGraph('name')
   const setNodeTypeOnGraph = setNodeValueOnGraph('type')
-  const setNodeSupplyOnGraph = setNodeValueOnGraph('supply')
+  const setNodeDemandOnGraph = setNodeValueOnGraph('demand')
 
   // Update node and edge position
   function setNodePosOnGraph(node, value) {
@@ -325,7 +325,7 @@ export const Canvas = ({graphJson, setGraphJson, mode, setMode, canvasWidth, can
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)}
             mode={mode} handleNodeClick={handleNodeClick} setName={setNodeNameOnGraph} setType={setNodeTypeOnGraph}
-            setPos={setNodePosOnGraph} canvasRef={canvasRef} setSupply={setNodeSupplyOnGraph} />
+            setPos={setNodePosOnGraph} canvasRef={canvasRef} setDemand={setNodeDemandOnGraph} />
         )
       })}
       {graphJson.edges.map((edge, i) => {

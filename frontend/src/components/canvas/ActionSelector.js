@@ -1,12 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { RiFileCopy2Fill, RiUpload2Line, RiSaveLine, RiDeleteBin2Fill } from 'react-icons/ri'
+import { RiFileCopy2Fill, RiUpload2Line, RiSaveLine, RiDeleteBin2Fill, RiCalculatorLine } from 'react-icons/ri'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { TooltipWrapper } from '../TooltipWrapper'
 import { Modal } from '../modals/Modal'
 import { deleteGraph, updateGraph } from '../../api/api-requests'
-
+import { solveNetwork } from '../../utils/network/Network'
 
 const IconHolder = styled.div`
   width: 30px;
@@ -28,6 +28,7 @@ const IconHolder = styled.div`
 export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
   const [showLoad, setShowLoad] = useState(false)
   const [json, setJson] = useState('')
+  const [error, setError] = useState('')
   const { uuid } = useParams()
   const navigate = useNavigate()
 
@@ -38,6 +39,10 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
         console.log('Failed to copy to clipboard')
     });
   }
+
+  useEffect(() => {
+    console.log(error)
+  }, [error])
 
   function submit() {
     setGraphJson(JSON.parse(json))
@@ -54,6 +59,10 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
   async function deletePage() {
     await deleteGraph(uuid)
     await navigate('/account')
+  }
+
+  async function solveGraph() {
+    solveNetwork(graphJson, setError)
   }
 
   return (
@@ -78,6 +87,11 @@ export const ActionSelector = ({graphJson, setGraphJson, pub}) => {
           <TooltipWrapper text='Delete Graph'>
             <IconHolder onClick={deletePage}>
               <RiDeleteBin2Fill size={20} />
+            </IconHolder>
+          </TooltipWrapper>
+          <TooltipWrapper text='Solve Graph'>
+            <IconHolder onClick={solveGraph}>
+              <RiCalculatorLine size={20} />
             </IconHolder>
           </TooltipWrapper>
         </Fragment>

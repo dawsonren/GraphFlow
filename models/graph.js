@@ -13,7 +13,7 @@ var GraphSchema = new Schema({
     id: String,
     name: String,
     type: String,
-    supply: Number
+    demand: Number
   })],
   edges: [new Schema({
     display_data: {
