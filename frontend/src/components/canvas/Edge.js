@@ -1,8 +1,10 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux'
 
 import { useOutsideClick } from '../../utils/use-outside-click';
 import { FlexGrow, DropdownMenu, DropdownMenuRow, SmallInput } from '../styled'
+import { modifyGraphEdgeCost, modifyGraphEdgeMinflow, modifyGraphEdgeMaxflow, modifyGraphEdgeCurve, deleteGraphEdge } from '../../redux/reducers/graph'
 
 const ValueContainer = styled.div`
   position: absolute;
@@ -35,7 +37,9 @@ const RedSpan = styled.span`
 `
 
 
-export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setCost, setMinFlow, setMaxFlow, mode, deleteEdge, setCurve}) => {
+export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, mode}) => {
+  const dispatch = useDispatch()
+
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
   const fromY = edge.display_data.fromY
@@ -97,21 +101,21 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setCost,
     setShowCurve(edge.display_data.curve)
   }, [edge.display_data.curve])
 
-  function updateValue(setShowValue, setValue) {
+  function updateValue(setShowValue, action) {
     return (e) => {
       setShowValue(e.target.value)
 
       // only update if value is valid
       const value = parseInt(e.target.value)
       if (Number.isInteger(value)) {
-        setValue(edge, value)
+        dispatch(action(edge.id, value))
       }
     }
   }
 
-  const updateCost = updateValue(setShowCost, setCost)
-  const updateMinFlow = updateValue(setShowMinFlow, setMinFlow)
-  const updateMaxFlow = updateValue(setShowMaxFlow, setMaxFlow)
+  const updateCost = updateValue(setShowCost, modifyGraphEdgeCost)
+  const updateMinFlow = updateValue(setShowMinFlow, modifyGraphEdgeMinflow)
+  const updateMaxFlow = updateValue(setShowMaxFlow, modifyGraphEdgeMaxflow)
 
   function updateCurve(e) {
     setShowCurve(e.target.value)
@@ -119,8 +123,12 @@ export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, setCost,
     // only update if value is valid
     const value = parseFloat(e.target.value)
     if (Number.isFinite(value) && Math.abs(value) <= 1) {
-      setCurve(edge, value)
+      dispatch(modifyGraphEdgeCurve(edge.id, value))
     }
+  }
+
+  function deleteEdge() {
+    dispatch(deleteGraphEdge(edge.id))
   }
 
   // Swap start and end so that the marker is contained within the value of the arrow line.

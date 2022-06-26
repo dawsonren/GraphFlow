@@ -1,8 +1,10 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux'
 import { RiAddCircleLine, RiArrowRightLine, RiDragMove2Fill, RiCursorFill, RiDeleteBin7Fill, RiForbid2Line } from 'react-icons/ri';
 
 import { Row } from '../styled'
+import { resetGraph } from '../../redux/reducers/graph';
 
 const Card = styled.div`
   display: flex;
@@ -41,7 +43,7 @@ const ModeRow = ({id, icon, selected, onClickCard, modeName}) => {
   )
 }
 
-export const ModeSelector = ({mode, setMode, graphJson, setGraphJson}) => {
+export const ModeSelector = ({mode, setMode}) => {
   const modes = ['add_node', 'add_edge', 'move', 'select', 'delete']
   const modeNames = ['Add Node', 'Add Edge', 'Move', 'Select', 'Delete']
   const icons = [<RiAddCircleLine size={30} />,
@@ -49,6 +51,11 @@ export const ModeSelector = ({mode, setMode, graphJson, setGraphJson}) => {
                  <RiDragMove2Fill size={30} />,
                  <RiCursorFill size={30} />,
                  <RiDeleteBin7Fill size={30} />]
+  const dispatch = useDispatch()
+  
+  function clearGraph() {
+    dispatch(resetGraph())
+  }
 
   return (
     <LeftContainer>
@@ -59,7 +66,7 @@ export const ModeSelector = ({mode, setMode, graphJson, setGraphJson}) => {
         )
       })}
       <ModeRow key={modes.length} icon={<RiForbid2Line size={30} />} selected={mode === modes.length}
-        onClickCard={() => setGraphJson({name: graphJson.name, nodes: [], edges: []})} modeName={'Clear'} />
+        onClickCard={clearGraph} modeName={'Clear'} />
     </LeftContainer>
   )
 

@@ -1,10 +1,12 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { RiCheckboxBlankCircleLine, RiCheckboxBlankCircleFill } from 'react-icons/ri'
+import { useDispatch } from 'react-redux'
 
 import { useOutsideClick } from '../../utils/use-outside-click';
 import { useDrag } from '../../utils/use-drag'
 import { Row, FlexGrow, DropdownMenu, DropdownMenuRow, SmallInput } from '../styled'
+import { modifyGraphNodeName, modifyGraphNodeType, modifyGraphNodeDemand, modifyGraphNodePosition } from '../../redux/reducers/graph';
 
 const Circle = styled.div`
   position: absolute;
@@ -49,7 +51,9 @@ const RadioButton = ({trigger, input, updateType}) => {
 
 }
 
-export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, setName, setType, setPos, canvasRef, setDemand}) => {
+export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, canvasRef}) => {
+  const dispatch = useDispatch()
+
   const nodeRef = useRef(null)
 
   useOutsideClick(nodeRef, () => showMenu === id && setShowMenu(false))
@@ -64,21 +68,21 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
   function updateName(e) {
     const value = e.target.value
     setShowName(value)
-    setName(node, value)
+    dispatch(modifyGraphNodeName(node.id, value))
   }
 
   function updateType(type) {
-    setType(node, type)
+    setShowType(type)
+    dispatch(modifyGraphNodeType(node.id, type))
   }
 
   function updatePos(e) {
     if (mode === 'move') {
-      const newPos = {
+      dispatch(modifyGraphNodePosition(node.id, {
         top: e.clientY - offsets.top - node.display_data.radius,
         left: e.clientX - offsets.left - node.display_data.radius,
         radius: node.display_data.radius
-      }
-      setPos(node, newPos)
+      }))
     }
   }
 
@@ -88,7 +92,7 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
     // only update if value is valid
     const value = parseInt(e.target.value)
     if (Number.isInteger(value)) {
-      setDemand(node, value)
+      dispatch(modifyGraphNodeDemand(node.id, value))
     }
   }
 
@@ -117,9 +121,9 @@ export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu
           <DropdownMenuRow style={{width: 175}}>Node name <FlexGrow /><SmallInput style={{width: 75}} value={showName} onChange={updateName} /></DropdownMenuRow>
           <DropdownMenuRow style={{width: 175}}>
             Type <FlexGrow />
-            <RadioButton trigger='s' input={node.type} updateType={updateType} />
-            <RadioButton trigger='t' input={node.type} updateType={updateType} />
-            <RadioButton trigger='' input={node.type} updateType={updateType} />
+            <RadioButton trigger='s' input={showType} updateType={updateType} />
+            <RadioButton trigger='t' input={showType} updateType={updateType} />
+            <RadioButton trigger='' input={showType} updateType={updateType} />
           </DropdownMenuRow>
           <DropdownMenuRow style={{width: 175}}>Demand (b) <FlexGrow /><SmallInput value={showDemand} onChange={updateDemand} /></DropdownMenuRow>
         </DropdownMenu>

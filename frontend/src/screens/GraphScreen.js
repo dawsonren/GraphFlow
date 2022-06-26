@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
+import { loadGraph } from '../redux/reducers/graph';
 import { GraphContainer } from '../components/containers/GraphContainer'
 import { getGraph } from '../api/api-requests'
 
 export const GraphScreen = () => {
   const { uuid } = useParams()
   const navigate = useNavigate()
-  const [graphJson, setGraphJson] = useState({name: '', nodes: [], edges: []})
+  const dispatch = useDispatch()
 
   async function loadData() {
     try {
       const data = await getGraph(uuid)
-      setGraphJson({name: data.name, nodes: data.nodes, edges: data.edges})
+      dispatch(loadGraph({name: data.name, nodes: data.nodes, edges: data.edges}))
     } catch (err) {
       navigate('/')
     }
@@ -23,6 +25,6 @@ export const GraphScreen = () => {
   }, [])
 
   return (
-    <GraphContainer pub={false} graphJson={graphJson} setGraphJson={setGraphJson} />
+    <GraphContainer pub={false} />
   )
 }
