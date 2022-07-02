@@ -11,19 +11,18 @@ import { ActionSelector } from '../canvas/ActionSelector'
 import { Row, Column, Link, TitleInput } from '../styled'
 import { useOutsideClick } from '../../utils/use-outside-click'
 import { setGraphName } from '../../redux/reducers/graph'
+import { setModeSelect } from '../../redux/reducers/mode';
 
 export const GraphContainer = ({pub}) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const graph = useSelector(data => data.graph)
 
-  const [mode, setMode] = useState('add_node')
-
   const canvasWidth = 700
   const canvasHeight = 400
 
   const modeRef = useRef(null)
-  useOutsideClick(modeRef, () => setMode('select'))
+  useOutsideClick(modeRef, () => dispatch(setModeSelect()))
 
   function updateTitle(newTitle) {
     dispatch(setGraphName(newTitle))
@@ -41,8 +40,8 @@ export const GraphContainer = ({pub}) => {
           <TitleInput value={graph.name} onChange={(e) => updateTitle(e.target.value)} />
         }
         <Row ref={modeRef}>
-          <ModeSelector mode={mode} setMode={setMode} />
-          <Canvas mode={mode} setMode={setMode} canvasWidth={canvasWidth} canvasHeight={canvasHeight} />
+          <ModeSelector />
+          <Canvas canvasWidth={canvasWidth} canvasHeight={canvasHeight} />
           <ActionSelector pub={pub} />
         </Row>
         {pub &&

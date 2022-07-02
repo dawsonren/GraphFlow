@@ -27,10 +27,11 @@ const Cursor = styled.div`
   border: 2px solid var(--black);
 `
 
-export const Canvas = ({mode, setMode, canvasWidth, canvasHeight}) => {
+export const Canvas = ({canvasWidth, canvasHeight}) => {
   // Redux
   const dispatch = useDispatch()
   const graph = useSelector(data => data.graph)
+  const mode = useSelector(data => data.mode)
 
   // Utility
   const [highlight, setHighlight] = useState(false)
@@ -228,13 +229,13 @@ export const Canvas = ({mode, setMode, canvasWidth, canvasHeight}) => {
         return (
           <Node key={i} id={i} node={node} highlight={highlight} setHighlight={setHighlight} offsets={offsets}
             showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)} canvasRef={canvasRef}
-            mode={mode} handleNodeClick={handleNodeClick} />
+            handleNodeClick={handleNodeClick} />
         )
       })}
       {graph.edges.map((edge, i) => {
         return (
           <Edge key={i} edge={edge} nodeRadius={nodeRadius} offsets={offsets}
-            showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)} mode={mode} />
+            showMenu={showMenu} setShowMenu={(input) => mode === 'select' && setShowMenu(input)} />
         )
       })}
       <Cursor id='preview-node' nodeRadius={nodeRadius} hide={!showPreviewNode} />

@@ -1,7 +1,7 @@
-import React, { Fragment, useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { RiCheckboxBlankCircleLine, RiCheckboxBlankCircleFill } from 'react-icons/ri'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { useOutsideClick } from '../../utils/use-outside-click';
 import { useDrag } from '../../utils/use-drag'
@@ -51,8 +51,9 @@ const RadioButton = ({trigger, input, updateType}) => {
 
 }
 
-export const Node = ({id, node, mode, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, canvasRef}) => {
+export const Node = ({id, node, offsets, highlight, setHighlight, showMenu, setShowMenu, handleNodeClick, canvasRef}) => {
   const dispatch = useDispatch()
+  const mode = useSelector(data => data.mode)
 
   const nodeRef = useRef(null)
 

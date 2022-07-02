@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { useOutsideClick } from '../../utils/use-outside-click';
 import { FlexGrow, DropdownMenu, DropdownMenuRow, SmallInput } from '../styled'
@@ -37,8 +37,9 @@ const RedSpan = styled.span`
 `
 
 
-export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu, mode}) => {
+export const Edge = ({edge, nodeRadius, offsets, showMenu, setShowMenu}) => {
   const dispatch = useDispatch()
+  const mode = useSelector(data => data.mode)
 
   const fromX = edge.display_data.fromX
   const toX = edge.display_data.toX
