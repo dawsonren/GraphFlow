@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import useScrollPosition from '@react-hook/window-scroll'
 import { useDispatch, useSelector } from 'react-redux'
+import _ from 'lodash'
 
 import { Node } from './Node'
 import { Edge } from './Edge'
@@ -132,7 +133,7 @@ export const Canvas = ({canvasWidth, canvasHeight}) => {
     if (mode === 'add_edge') {
       if (!fromNode) {
         setFromNode(node)
-      } else if (!toNode) {
+      } else if (!toNode && (fromNode.id !== node.id)) {
         setToNode(node)
       } else {
         setFromNode(null)
