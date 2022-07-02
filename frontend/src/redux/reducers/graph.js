@@ -95,7 +95,7 @@ export const modifyGraphEdgeCurve = (id, curve) => ({
 ///
 
 export const resetGraph = () => ({
-  type: 'MODIFY_GRAPH_EDGE',
+  type: 'RESET_GRAPH',
   value: null
 });
 

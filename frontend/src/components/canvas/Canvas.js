@@ -150,12 +150,13 @@ export const Canvas = ({mode, setMode, canvasWidth, canvasHeight}) => {
       const notSelfLink = fromNode.id !== toNode.id
 
       // Creating a reciprocal pair? Need to change curvature!
+      console.log('change curve');
       console.log(graph)
-      const reciprocal = graph.edges.filter(edge => edge.to === fromNode.id && edge.from === toNode.id)
+      const reciprocal = graph.edges.filter(edge => edge.to === fromNode.id && edge.from === toNode.id)[0]
 
       if (notDuplicate && notSelfLink) {
-        if (reciprocal.length !== 0) {
-          console.log(reciprocal.id)
+        if (reciprocal && reciprocal.length !== 0) {
+          console.log(reciprocal)
           dispatch(modifyGraphEdgeCurve(reciprocal.id, -1))
           handleAddEdge(1)
         } else {
